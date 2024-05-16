@@ -21,7 +21,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: tricolor-austral
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.INGSIS_SECRET }}
 
       - name: Push to GitHub Packages
