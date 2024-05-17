@@ -30,4 +30,4 @@ jobs:
         with:
           push: true
           tags: |
-           ghcr.io/austral-ingsis/echo:${{ steps.short-sha.outputs.sha }}
+           ghcr.io/tricolor-austral/echo:${{ steps.short-sha.outputs.sha }}
