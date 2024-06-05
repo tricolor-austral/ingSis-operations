@@ -25,6 +25,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation ("org.postgresql:postgresql")
+	implementation ("org.springframework.boot:spring-boot-starter-security")
+	implementation ("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 }
 
 tasks.withType<KotlinCompile> {
