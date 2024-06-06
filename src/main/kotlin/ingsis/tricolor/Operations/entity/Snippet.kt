@@ -1,13 +1,15 @@
-package entity
+package ingsis.tricolor.Operations.entity
 
-import dto.SnippetCreateDto
+import ingsis.tricolor.Operations.dto.SnippetCreateDto
 import jakarta.persistence.*
+import org.jetbrains.annotations.NotNull
 
 
 @Entity
 class Snippet {
 
-    @Id
+    @Id()
+    @NotNull
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long = 0;
 

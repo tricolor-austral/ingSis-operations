@@ -1,6 +1,6 @@
-package repository
+package ingsis.tricolor.Operations.repository
 
-import entity.Snippet
+import ingsis.tricolor.Operations.entity.Snippet
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
