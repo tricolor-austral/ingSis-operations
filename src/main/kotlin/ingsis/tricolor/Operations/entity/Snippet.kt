@@ -23,7 +23,7 @@ class Snippet {
     var compliance: String = "";
 
     @Column
-    var author: String = "";
+    var authorId: String = "";
 
     @Column
     var language : String = "";
@@ -38,7 +38,7 @@ class Snippet {
             snippet.name = snippetDto.name
             snippet.content = snippetDto.content
             snippet.compliance = snippetDto.compliance
-            snippet.author = snippetDto.author
+            snippet.authorId = snippetDto.authorId
             snippet.language = snippetDto.language
             snippet.extension = snippetDto.extension
             return snippet
