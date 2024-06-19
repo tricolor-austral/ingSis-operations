@@ -1,4 +1,4 @@
-package ingsis.tricolor.Operations
+package ingsis.tricolor.operations
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

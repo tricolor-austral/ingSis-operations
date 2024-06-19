@@ -1,36 +1,33 @@
-package ingsis.tricolor.Operations.entity
+package ingsis.tricolor.operations.entity
 
-import ingsis.tricolor.Operations.dto.SnippetCreateDto
+import ingsis.tricolor.operations.dto.SnippetCreateDto
 import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 
-
 @Entity
 class Snippet {
-
     @Id()
     @NotNull
     @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: Long = 0;
+    var id: Long = 0
 
     @Column
-    var name : String = "";
+    var name: String = ""
 
     @Column
-    var content: String = "";
+    var content: String = ""
 
     @Column
-    var compliance: String = "";
+    var compliance: String = ""
 
     @Column
-    var authorId: String = "";
+    var authorId: String = ""
 
     @Column
-    var language : String = "";
+    var language: String = ""
 
     @Column
-    var extension: String = "";
-
+    var extension: String = ""
 
     companion object {
         fun from(snippetDto: SnippetCreateDto): Snippet {
@@ -44,6 +41,4 @@ class Snippet {
             return snippet
         }
     }
-
-
 }
