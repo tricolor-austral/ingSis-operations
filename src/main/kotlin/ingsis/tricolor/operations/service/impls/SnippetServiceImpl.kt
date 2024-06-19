@@ -29,7 +29,7 @@ class SnippetServiceImpl
             val snippet = Snippet.from(snippetDto)
             val savedSnippet = this.snippetRepositoryCrud.save(snippet)
             println("snippet created")
-//            createResourcePermissions(snippetDto, savedSnippet)
+            createResourcePermissions(snippetDto, savedSnippet)
             saveSnippetOnAssetService(savedSnippet, snippet)
             return savedSnippet
         }
