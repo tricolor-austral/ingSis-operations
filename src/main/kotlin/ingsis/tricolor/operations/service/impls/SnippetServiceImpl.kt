@@ -6,7 +6,7 @@ import ingsis.tricolor.operations.dto.UpdateSnippetDto
 import ingsis.tricolor.operations.dto.apicalls.ResourcePermissionCreateDto
 import ingsis.tricolor.operations.entity.Snippet
 import ingsis.tricolor.operations.error.NotFoundException
-import ingsis.tricolor.operations.error.UnauthorizedEditException
+import ingsis.tricolor.operations.error.UnauthorizedException
 import ingsis.tricolor.operations.repository.SnippetRepositoryCrud
 import ingsis.tricolor.operations.repository.SnippetRepositoryPage
 import ingsis.tricolor.operations.service.APICalls
@@ -56,13 +56,18 @@ class SnippetServiceImpl
             updateSnippetDto: UpdateSnippetDto,
         ): GetSnippetDto {
             val snippet = checkSnippetExists(updateSnippetDto.id)
-            checkUserCanModify(userId, updateSnippetDto)
+            checkUserCanModify(userId, updateSnippetDto.id.toString())
             saveSnippetOnAssetService(updateSnippetDto.id.toString(), updateSnippetDto.content)
             return GetSnippetDto.from(snippet, updateSnippetDto.content)
         }
 
-        override fun deleteSnippet(id: Long) {
-            snippetRepositoryCrud.deleteById(id)
+        override fun deleteSnippet(
+            userId: String,
+            snippetId: Long,
+        ) {
+            apiCalls.deleteResourcePermissions(userId, snippetId.toString())
+            apiCalls.deleteSnippet(snippetId.toString())
+            snippetRepositoryCrud.deleteById(snippetId)
         }
 
         override fun getSnippet(id: String): String {
@@ -104,11 +109,11 @@ class SnippetServiceImpl
 
         private fun checkUserCanModify(
             userId: String,
-            updateSnippetDto: UpdateSnippetDto,
+            snippetId: String,
         ) {
-            val permissions = apiCalls.userCanWrite(userId, updateSnippetDto.id.toString())
+            val permissions = apiCalls.userCanWrite(userId, snippetId)
             if (!permissions.permissions.contains("WRITE")) {
-                throw UnauthorizedEditException()
+                throw UnauthorizedException()
             }
         }
 

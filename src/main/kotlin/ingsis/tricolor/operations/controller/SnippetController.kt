@@ -28,15 +28,8 @@ class SnippetController(val snippetService: SnippetService) {
     }
 
     @GetMapping()
-    fun getSnippet(
-        @RequestParam id: String,
-    ): String {
-        return snippetService.getSnippet(id)
-    }
-
-    @GetMapping()
     fun getSnippets(
-        @RequestParam userId: String,
+        @CookieValue userId: String,
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int,
     ): Page<GetSnippetDto> {
@@ -46,7 +39,7 @@ class SnippetController(val snippetService: SnippetService) {
 
     @PutMapping()
     fun updateSnippet(
-        @RequestParam userId: String,
+        @CookieValue userId: String,
         @RequestBody updateSnippetDto: UpdateSnippetDto,
     ): GetSnippetDto {
         // TODO() Agregar chequeo de permisos para editar una vez que se implemente la autenticación en la UI y el módulo permisos
@@ -55,9 +48,10 @@ class SnippetController(val snippetService: SnippetService) {
 
     @DeleteMapping("/{id}")
     fun deleteSnippet(
+        @CookieValue userId: String,
         @PathVariable id: Long,
     ) {
         // TODO() Agregar chequeo de permisos para borrar una vez que se implemente la autenticación en la UI y el módulo permisos
-        snippetService.deleteSnippet(id)
+        snippetService.deleteSnippet(userId, id)
     }
 }

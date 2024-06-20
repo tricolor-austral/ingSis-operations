@@ -18,6 +18,11 @@ interface APICalls {
         resourceId: String,
     ): PermissionCreateResponse
 
+    fun deleteResourcePermissions(
+        userId: String,
+        resourceId: String,
+    )
+
     // Asset service:
     fun saveSnippet(
         key: String,
@@ -25,4 +30,6 @@ interface APICalls {
     ): Boolean
 
     fun getSnippet(key: String): String
+
+    fun deleteSnippet(key: String): Boolean
 }

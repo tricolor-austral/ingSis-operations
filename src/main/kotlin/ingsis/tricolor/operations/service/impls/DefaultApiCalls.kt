@@ -3,6 +3,8 @@ package ingsis.tricolor.operations.service.impls
 import ingsis.tricolor.operations.dto.apicalls.PermissionCreateResponse
 import ingsis.tricolor.operations.dto.apicalls.ResourcePermissionCreateDto
 import ingsis.tricolor.operations.dto.apicalls.UserResource
+import ingsis.tricolor.operations.error.NotFoundException
+import ingsis.tricolor.operations.error.UnauthorizedException
 import ingsis.tricolor.operations.service.APICalls
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpStatus
@@ -57,6 +59,18 @@ class DefaultApiCalls : APICalls {
             .block() ?: throw RuntimeException("Unable to fetch permissions")
     }
 
+    override fun deleteResourcePermissions(
+        userId: String,
+        resourceId: String,
+    ) {
+        permissionApi.delete()
+            .uri("/resource/{resourceId}", resourceId)
+            .cookie("userId", userId)
+            .retrieve()
+            .bodyToMono(String::class.java)
+            .block() ?: throw UnauthorizedException()
+    }
+
     override fun saveSnippet(
         key: String,
         snippet: String,
@@ -84,18 +98,22 @@ class DefaultApiCalls : APICalls {
     }
 
     override fun getSnippet(key: String): String {
-        try {
-            val response =
-                assetServiceApi.get()
-                    .uri("/snippets/{key}", key)
-                    .retrieve()
-                    .bodyToMono(String::class.java)
-                    .block() ?: throw RuntimeException("Failed to retrieve snippet")
-            print(response)
-            return response
-        } catch (e: Exception) {
-            print(e.message)
-            return ""
-        }
+        val response =
+            assetServiceApi.get()
+                .uri("/snippets/{key}", key)
+                .retrieve()
+                .bodyToMono(String::class.java)
+                .block() ?: throw NotFoundException()
+        print(response)
+        return response
+    }
+
+    override fun deleteSnippet(key: String): Boolean {
+        assetServiceApi.delete()
+            .uri("/snippets/{key}", key)
+            .retrieve()
+            .bodyToMono(Unit::class.java)
+            .block() ?: throw NotFoundException()
+        return true
     }
 }
