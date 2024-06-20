@@ -1,8 +1,10 @@
 package ingsis.tricolor.operations.service.impls
 
+import ingsis.tricolor.operations.dto.apicalls.PermissionCreateResponse
 import ingsis.tricolor.operations.dto.apicalls.ResourcePermissionCreateDto
 import ingsis.tricolor.operations.dto.apicalls.UserResource
 import ingsis.tricolor.operations.service.APICalls
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
@@ -30,6 +32,29 @@ class DefaultApiCalls : APICalls {
 
     override fun getUserResourcePermissions(userResource: UserResource): List<Permissions> {
         TODO("Implement method")
+    }
+
+    override fun getAllUserResources(userId: String): List<PermissionCreateResponse> {
+        val response =
+            permissionApi.get()
+                .uri("/resource/all-by-userId{id}", userId)
+                .retrieve()
+                .bodyToMono(object : ParameterizedTypeReference<List<PermissionCreateResponse>>() {})
+                .block() ?: throw RuntimeException("Unable to fetch the resources")
+        return response
+    }
+
+    override fun userCanWrite(
+        userId: String,
+        resourceId: String,
+    ): PermissionCreateResponse {
+        return permissionApi.get()
+            .uri("/resource/can-write")
+            .cookie("userId", userId)
+            .cookie("resourceId", resourceId)
+            .retrieve()
+            .bodyToMono(PermissionCreateResponse::class.java)
+            .block() ?: throw RuntimeException("Unable to fetch permissions")
     }
 
     override fun saveSnippet(

@@ -10,12 +10,13 @@ interface SnippetService {
     fun createSnippet(snippetDto: SnippetCreateDto): Snippet
 
     fun getSnippets(
+        userId: String,
         page: Int,
         size: Int,
     ): Page<GetSnippetDto>
 
     fun updateSnippet(
-        id: Long,
+        userId: String,
         updateSnippetDto: UpdateSnippetDto,
     ): GetSnippetDto
 

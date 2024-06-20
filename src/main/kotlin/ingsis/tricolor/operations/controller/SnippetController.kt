@@ -2,15 +2,24 @@
 
 package ingsis.tricolor.operations.controller
 
+import ingsis.tricolor.operations.dto.GetSnippetDto
 import ingsis.tricolor.operations.dto.SnippetCreateDto
 import ingsis.tricolor.operations.dto.UpdateSnippetDto
 import ingsis.tricolor.operations.entity.Snippet
+import ingsis.tricolor.operations.error.HttpException
 import ingsis.tricolor.operations.service.SnippetService
+import org.springframework.data.domain.Page
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/snippets")
 class SnippetController(val snippetService: SnippetService) {
+    @ExceptionHandler(HttpException::class)
+    fun handleException(exception: HttpException): ResponseEntity<String> {
+        return ResponseEntity(exception.message, exception.status)
+    }
+
     @PostMapping()
     fun createSnippet(
         @RequestBody snippetDto: SnippetCreateDto,
@@ -25,22 +34,23 @@ class SnippetController(val snippetService: SnippetService) {
         return snippetService.getSnippet(id)
     }
 
-//    @GetMapping()
-//    fun getSnippets(
-//        @RequestParam pageNumber: Int,
-//        @RequestParam pageSize: Int,
-//    ): Page<GetSnippetDto> {
-//        println("getSnippets")
-//        return snippetService.getSnippets(pageNumber, pageSize)
-//    }
+    @GetMapping()
+    fun getSnippets(
+        @RequestParam userId: String,
+        @RequestParam pageNumber: Int,
+        @RequestParam pageSize: Int,
+    ): Page<GetSnippetDto> {
+        println("getSnippets")
+        return snippetService.getSnippets(userId, pageNumber, pageSize)
+    }
 
-    @PutMapping("/{id}")
+    @PutMapping()
     fun updateSnippet(
-        @PathVariable id: Long,
+        @RequestParam userId: String,
         @RequestBody updateSnippetDto: UpdateSnippetDto,
-    ): Snippet {
+    ): GetSnippetDto {
         // TODO() Agregar chequeo de permisos para editar una vez que se implemente la autenticación en la UI y el módulo permisos
-        return snippetService.updateSnippet(id, updateSnippetDto)
+        return snippetService.updateSnippet(userId, updateSnippetDto)
     }
 
     @DeleteMapping("/{id}")

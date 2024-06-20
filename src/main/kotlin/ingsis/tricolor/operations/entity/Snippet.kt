@@ -20,9 +20,6 @@ class Snippet {
     var compliance: String = ""
 
     @Column
-    var authorId: String = ""
-
-    @Column
     var language: String = ""
 
     @Column
@@ -33,7 +30,6 @@ class Snippet {
             val snippet = Snippet()
             snippet.name = snippetDto.name
             snippet.compliance = snippetDto.compliance
-            snippet.authorId = snippetDto.authorId
             snippet.language = snippetDto.language
             snippet.extension = snippetDto.extension
             return snippet

@@ -5,12 +5,15 @@ import ingsis.tricolor.operations.dto.SnippetCreateDto
 import ingsis.tricolor.operations.dto.UpdateSnippetDto
 import ingsis.tricolor.operations.dto.apicalls.ResourcePermissionCreateDto
 import ingsis.tricolor.operations.entity.Snippet
+import ingsis.tricolor.operations.error.NotFoundException
+import ingsis.tricolor.operations.error.UnauthorizedEditException
 import ingsis.tricolor.operations.repository.SnippetRepositoryCrud
 import ingsis.tricolor.operations.repository.SnippetRepositoryPage
 import ingsis.tricolor.operations.service.APICalls
 import ingsis.tricolor.operations.service.SnippetService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
@@ -21,7 +24,6 @@ class SnippetServiceImpl
         val snippetRepositoryPage: SnippetRepositoryPage,
         val snippetRepositoryCrud: SnippetRepositoryCrud,
         val apiCalls: APICalls,
-        repositoryCrud: SnippetRepositoryCrud,
     ) : SnippetService {
         override fun createSnippet(snippetDto: SnippetCreateDto): Snippet {
             // TODO: manejar error id ya existe
@@ -30,28 +32,33 @@ class SnippetServiceImpl
             val savedSnippet = this.snippetRepositoryCrud.save(snippet)
             println("snippet created")
             createResourcePermissions(snippetDto, savedSnippet)
-            saveSnippetOnAssetService(snippetDto, savedSnippet)
+            saveSnippetOnAssetService(snippetDto.content, savedSnippet.id.toString())
             return savedSnippet
         }
 
         override fun getSnippets(
+            userId: String,
             page: Int,
             size: Int,
         ): Page<GetSnippetDto> {
-            val snippets = snippetRepositoryPage.findAll(PageRequest.of(page, size))
-            return snippets.map {
-                val content = apiCalls.getSnippet(it.id.toString())
-                GetSnippetDto.from(it, content)
-            }
+            val resources = apiCalls.getAllUserResources(userId)
+            val context = snippetRepositoryCrud.findAllById(resources.map { it.resourceId.toLong() })
+            val snippets =
+                context.map {
+                    val content = apiCalls.getSnippet(it.id.toString())
+                    GetSnippetDto.from(it, content)
+                }
+            return toPageable(snippets, page, size)
         }
 
         override fun updateSnippet(
-            id: Long,
+            userId: String,
             updateSnippetDto: UpdateSnippetDto,
         ): GetSnippetDto {
-            val snippet = snippetRepositoryCrud.findById(id).orElseThrow { throw Exception("Snippet not found") }
-            val content = apiCalls.getSnippet(snippet.id.toString())
-            return GetSnippetDto.from(snippet, content)
+            val snippet = checkSnippetExists(updateSnippetDto.id)
+            checkUserCanModify(userId, updateSnippetDto)
+            saveSnippetOnAssetService(updateSnippetDto.id.toString(), updateSnippetDto.content)
+            return GetSnippetDto.from(snippet, updateSnippetDto.content)
         }
 
         override fun deleteSnippet(id: Long) {
@@ -75,11 +82,37 @@ class SnippetServiceImpl
         }
 
         private fun saveSnippetOnAssetService(
-            snippetDto: SnippetCreateDto,
-            snippet: Snippet,
+            id: String,
+            content: String,
         ) {
             println("saving on asset service...")
-            apiCalls.saveSnippet(snippet.id.toString(), snippetDto.content)
+            apiCalls.saveSnippet(id, content)
             println("asset saved!")
+        }
+
+        private fun toPageable(
+            snippets: List<GetSnippetDto>,
+            page: Int,
+            size: Int,
+        ): Page<GetSnippetDto> {
+            val total = snippets.size
+            val start = (page * size).coerceAtMost(total)
+            val end = (start + size).coerceAtMost(total)
+            val subList = snippets.subList(start, end)
+            return PageImpl(subList, PageRequest.of(page, size), total.toLong())
+        }
+
+        private fun checkUserCanModify(
+            userId: String,
+            updateSnippetDto: UpdateSnippetDto,
+        ) {
+            val permissions = apiCalls.userCanWrite(userId, updateSnippetDto.id.toString())
+            if (!permissions.permissions.contains("WRITE")) {
+                throw UnauthorizedEditException()
+            }
+        }
+
+        private fun checkSnippetExists(id: Long): Snippet {
+            return snippetRepositoryCrud.findById(id).orElseThrow { throw NotFoundException() }
         }
     }
