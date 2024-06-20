@@ -4,6 +4,7 @@ import ingsis.tricolor.operations.dto.GetSnippetDto
 import ingsis.tricolor.operations.dto.SnippetCreateDto
 import ingsis.tricolor.operations.dto.UpdateSnippetDto
 import ingsis.tricolor.operations.dto.apicalls.ResourcePermissionCreateDto
+import ingsis.tricolor.operations.dto.apicalls.UserResourcePermission
 import ingsis.tricolor.operations.entity.Snippet
 import ingsis.tricolor.operations.error.NotFoundException
 import ingsis.tricolor.operations.error.UnauthorizedException
@@ -73,6 +74,14 @@ class SnippetServiceImpl
         override fun getSnippet(id: String): String {
             println("getting snippet with id: $id")
             return apiCalls.getSnippet(id)
+        }
+
+        override fun shareSnippet(
+            authorId: String,
+            friendId: String,
+            snippetId: Long,
+        ): UserResourcePermission {
+            return apiCalls.shareResource(authorId, snippetId.toString(), friendId)
         }
 
         private fun createResourcePermissions(

@@ -3,6 +3,7 @@ package ingsis.tricolor.operations.service
 import ingsis.tricolor.operations.dto.apicalls.PermissionCreateResponse
 import ingsis.tricolor.operations.dto.apicalls.ResourcePermissionCreateDto
 import ingsis.tricolor.operations.dto.apicalls.UserResource
+import ingsis.tricolor.operations.dto.apicalls.UserResourcePermission
 import java.security.Permissions
 
 interface APICalls {
@@ -22,6 +23,12 @@ interface APICalls {
         userId: String,
         resourceId: String,
     )
+
+    fun shareResource(
+        userId: String,
+        resourceId: String,
+        otherId: String,
+    ): UserResourcePermission
 
     // Asset service:
     fun saveSnippet(

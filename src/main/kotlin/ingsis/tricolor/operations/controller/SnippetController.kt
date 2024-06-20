@@ -3,8 +3,10 @@
 package ingsis.tricolor.operations.controller
 
 import ingsis.tricolor.operations.dto.GetSnippetDto
+import ingsis.tricolor.operations.dto.ShareSnippetDto
 import ingsis.tricolor.operations.dto.SnippetCreateDto
 import ingsis.tricolor.operations.dto.UpdateSnippetDto
+import ingsis.tricolor.operations.dto.apicalls.UserResourcePermission
 import ingsis.tricolor.operations.entity.Snippet
 import ingsis.tricolor.operations.error.HttpException
 import ingsis.tricolor.operations.service.SnippetService
@@ -53,5 +55,13 @@ class SnippetController(val snippetService: SnippetService) {
     ) {
         // TODO() Agregar chequeo de permisos para borrar una vez que se implemente la autenticación en la UI y el módulo permisos
         snippetService.deleteSnippet(userId, id)
+    }
+
+    @PostMapping("/share")
+    fun shareSnippet(
+        @CookieValue userId: String,
+        @RequestBody snippetFriend: ShareSnippetDto,
+    ): UserResourcePermission  {
+        return snippetService.shareSnippet(userId, snippetFriend.friendId, snippetFriend.snippetId)
     }
 }

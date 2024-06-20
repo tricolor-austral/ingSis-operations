@@ -1,8 +1,6 @@
 package ingsis.tricolor.operations.service.impls
 
-import ingsis.tricolor.operations.dto.apicalls.PermissionCreateResponse
-import ingsis.tricolor.operations.dto.apicalls.ResourcePermissionCreateDto
-import ingsis.tricolor.operations.dto.apicalls.UserResource
+import ingsis.tricolor.operations.dto.apicalls.*
 import ingsis.tricolor.operations.error.NotFoundException
 import ingsis.tricolor.operations.error.UnauthorizedException
 import ingsis.tricolor.operations.service.APICalls
@@ -69,6 +67,20 @@ class DefaultApiCalls : APICalls {
             .retrieve()
             .bodyToMono(String::class.java)
             .block() ?: throw UnauthorizedException()
+    }
+
+    override fun shareResource(
+        userId: String,
+        resourceId: String,
+        otherId: String,
+    ): UserResourcePermission {
+        val shareDto = ShareResource(userId, otherId, resourceId)
+        return permissionApi.post()
+            .uri("/resource/share-resource")
+            .bodyValue(shareDto)
+            .retrieve()
+            .bodyToMono(UserResourcePermission::class.java)
+            .block() ?: throw UnauthorizedException("User cannot share this resource as he is not the owner")
     }
 
     override fun saveSnippet(
