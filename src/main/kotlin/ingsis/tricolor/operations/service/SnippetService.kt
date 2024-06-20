@@ -17,7 +17,7 @@ interface SnippetService {
     fun updateSnippet(
         id: Long,
         updateSnippetDto: UpdateSnippetDto,
-    ): Snippet
+    ): GetSnippetDto
 
     fun deleteSnippet(id: Long)
 

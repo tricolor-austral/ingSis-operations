@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package ingsis.tricolor.operations.entity
 
 import ingsis.tricolor.operations.dto.SnippetCreateDto
@@ -15,9 +17,6 @@ class Snippet {
     var name: String = ""
 
     @Column
-    var content: String = ""
-
-    @Column
     var compliance: String = ""
 
     @Column
@@ -33,7 +32,6 @@ class Snippet {
         fun from(snippetDto: SnippetCreateDto): Snippet {
             val snippet = Snippet()
             snippet.name = snippetDto.name
-            snippet.content = snippetDto.content
             snippet.compliance = snippetDto.compliance
             snippet.authorId = snippetDto.authorId
             snippet.language = snippetDto.language

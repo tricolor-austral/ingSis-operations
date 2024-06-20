@@ -30,7 +30,7 @@ class SnippetServiceImpl
             val savedSnippet = this.snippetRepositoryCrud.save(snippet)
             println("snippet created")
             createResourcePermissions(snippetDto, savedSnippet)
-            saveSnippetOnAssetService(savedSnippet, snippet)
+            saveSnippetOnAssetService(snippetDto, savedSnippet)
             return savedSnippet
         }
 
@@ -39,16 +39,19 @@ class SnippetServiceImpl
             size: Int,
         ): Page<GetSnippetDto> {
             val snippets = snippetRepositoryPage.findAll(PageRequest.of(page, size))
-            return snippets.map { GetSnippetDto.from(it) }
+            return snippets.map {
+                val content = apiCalls.getSnippet(it.id.toString())
+                GetSnippetDto.from(it, content)
+            }
         }
 
         override fun updateSnippet(
             id: Long,
             updateSnippetDto: UpdateSnippetDto,
-        ): Snippet {
+        ): GetSnippetDto {
             val snippet = snippetRepositoryCrud.findById(id).orElseThrow { throw Exception("Snippet not found") }
-            snippet.content = updateSnippetDto.content
-            return snippetRepositoryCrud.save(snippet)
+            val content = apiCalls.getSnippet(snippet.id.toString())
+            return GetSnippetDto.from(snippet, content)
         }
 
         override fun deleteSnippet(id: Long) {
@@ -72,11 +75,11 @@ class SnippetServiceImpl
         }
 
         private fun saveSnippetOnAssetService(
-            savedSnippet: Snippet,
+            snippetDto: SnippetCreateDto,
             snippet: Snippet,
         ) {
             println("saving on asset service...")
-            apiCalls.saveSnippet(savedSnippet.id.toString(), snippet.content)
+            apiCalls.saveSnippet(snippet.id.toString(), snippetDto.content)
             println("asset saved!")
         }
     }

@@ -12,13 +12,16 @@ data class GetSnippetDto(
     val extension: String,
 ) {
     companion object {
-        fun from(snippet: Snippet): GetSnippetDto {
+        fun from(
+            snippet: Snippet,
+            content: String,
+        ): GetSnippetDto {
             return GetSnippetDto(
                 snippet.id.toString(),
                 snippet.name,
                 snippet.language,
                 snippet.authorId,
-                snippet.content,
+                content,
                 snippet.compliance,
                 snippet.extension,
             )
