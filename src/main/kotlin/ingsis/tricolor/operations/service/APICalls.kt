@@ -2,15 +2,11 @@ package ingsis.tricolor.operations.service
 
 import ingsis.tricolor.operations.dto.apicalls.PermissionCreateResponse
 import ingsis.tricolor.operations.dto.apicalls.ResourcePermissionCreateDto
-import ingsis.tricolor.operations.dto.apicalls.UserResource
 import ingsis.tricolor.operations.dto.apicalls.UserResourcePermission
-import java.security.Permissions
 
 interface APICalls {
     // Permissions:
     fun createResourcePermission(resourceData: ResourcePermissionCreateDto): Boolean
-
-    fun getUserResourcePermissions(userResource: UserResource): List<Permissions>
 
     fun getAllUserResources(userId: String): List<PermissionCreateResponse>
 

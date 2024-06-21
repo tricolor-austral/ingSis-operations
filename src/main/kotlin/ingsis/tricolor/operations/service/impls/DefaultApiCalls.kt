@@ -10,7 +10,6 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
-import java.security.Permissions
 
 @Service
 class DefaultApiCalls : APICalls {
@@ -28,10 +27,6 @@ class DefaultApiCalls : APICalls {
             println(e.message)
             return false
         }
-    }
-
-    override fun getUserResourcePermissions(userResource: UserResource): List<Permissions> {
-        TODO("Implement method")
     }
 
     override fun getAllUserResources(userId: String): List<PermissionCreateResponse> {
