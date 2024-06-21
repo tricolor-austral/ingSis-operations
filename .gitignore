@@ -42,3 +42,7 @@ out/
 ### Kotlin ###
 .kotlin
 !/.env
+
+### New Relic ###
+newrelic.yaml
+
