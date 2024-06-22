@@ -22,6 +22,7 @@ class SnippetController(val snippetService: SnippetService) {
         return ResponseEntity(exception.message, exception.status)
     }
 
+    @CrossOrigin(origins = ["*"])
     @PostMapping()
     fun createSnippet(
         @RequestBody snippetDto: SnippetCreateDto,
@@ -29,9 +30,10 @@ class SnippetController(val snippetService: SnippetService) {
         return snippetService.createSnippet(snippetDto)
     }
 
+    @CrossOrigin(origins = ["*"])
     @GetMapping()
     fun getSnippets(
-        @CookieValue userId: String,
+        @RequestParam userId: String,
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int,
     ): Page<GetSnippetDto> {
@@ -39,9 +41,10 @@ class SnippetController(val snippetService: SnippetService) {
         return snippetService.getSnippets(userId, pageNumber, pageSize)
     }
 
+    @CrossOrigin(origins = ["*"])
     @PutMapping()
     fun updateSnippet(
-        @CookieValue userId: String,
+        @RequestParam userId: String,
         @RequestBody updateSnippetDto: UpdateSnippetDto,
     ): GetSnippetDto {
         // TODO() Agregar chequeo de permisos para editar una vez que se implemente la autenticación en la UI y el módulo permisos

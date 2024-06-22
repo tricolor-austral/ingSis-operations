@@ -3,6 +3,7 @@ package ingsis.tricolor.operations.service.impls
 import ingsis.tricolor.operations.dto.GetSnippetDto
 import ingsis.tricolor.operations.dto.SnippetCreateDto
 import ingsis.tricolor.operations.dto.UpdateSnippetDto
+import ingsis.tricolor.operations.dto.apicalls.PermissionCreateResponse
 import ingsis.tricolor.operations.dto.apicalls.ResourcePermissionCreateDto
 import ingsis.tricolor.operations.dto.apicalls.UserResourcePermission
 import ingsis.tricolor.operations.entity.Snippet
@@ -42,7 +43,8 @@ class SnippetServiceImpl
             page: Int,
             size: Int,
         ): Page<GetSnippetDto> {
-            val resources = apiCalls.getAllUserResources(userId)
+//            val resources = apiCalls.getAllUserResources(userId)
+            val resources = listOf<PermissionCreateResponse>();
             val context = snippetRepositoryCrud.findAllById(resources.map { it.resourceId.toLong() })
             val snippets =
                 context.map {
