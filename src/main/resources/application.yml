@@ -1,0 +1,11 @@
+auth0:
+  audience: "http://localhost:8080/snippet-holder"
+
+spring:
+  application:
+    name: "Snippet Holder"
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "https://dev-mzg8hx5d6cmcfq7t.us.auth0.com/"
