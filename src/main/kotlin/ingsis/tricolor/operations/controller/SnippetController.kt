@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+@CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 @RestController
 @RequestMapping("/snippets")
 class SnippetController(val snippetService: SnippetService) {
@@ -22,7 +23,6 @@ class SnippetController(val snippetService: SnippetService) {
         return ResponseEntity(exception.message, exception.status)
     }
 
-    @CrossOrigin(origins = ["*"])
     @PostMapping()
     fun createSnippet(
         @RequestBody snippetDto: SnippetCreateDto,
@@ -30,7 +30,6 @@ class SnippetController(val snippetService: SnippetService) {
         return snippetService.createSnippet(snippetDto)
     }
 
-    @CrossOrigin(origins = ["*"])
     @GetMapping()
     fun getSnippets(
         @RequestParam userId: String,
@@ -41,30 +40,44 @@ class SnippetController(val snippetService: SnippetService) {
         return snippetService.getSnippets(userId, pageNumber, pageSize)
     }
 
-    @CrossOrigin(origins = ["*"])
+    @GetMapping("/byId")
+    fun getSnippetById(
+        @RequestParam userId: String,
+        @RequestParam snippetId: String,
+    ): GetSnippetDto {
+        return snippetService.getSnippetById(userId, snippetId.toLong())
+    }
+
     @PutMapping()
     fun updateSnippet(
         @RequestParam userId: String,
         @RequestBody updateSnippetDto: UpdateSnippetDto,
     ): GetSnippetDto {
-        // TODO() Agregar chequeo de permisos para editar una vez que se implemente la autenticación en la UI y el módulo permisos
         return snippetService.updateSnippet(userId, updateSnippetDto)
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("")
     fun deleteSnippet(
-        @CookieValue userId: String,
-        @PathVariable id: Long,
+        @RequestParam userId: String,
+        @RequestParam snippetId: String,
     ) {
-        // TODO() Agregar chequeo de permisos para borrar una vez que se implemente la autenticación en la UI y el módulo permisos
-        snippetService.deleteSnippet(userId, id)
+        println("user: $userId, snippet: $snippetId")
+        snippetService.deleteSnippet(userId, snippetId.toLong())
     }
 
     @PostMapping("/share")
     fun shareSnippet(
-        @CookieValue userId: String,
+        @RequestParam userId: String,
         @RequestBody snippetFriend: ShareSnippetDto,
-    ): UserResourcePermission  {
-        return snippetService.shareSnippet(userId, snippetFriend.friendId, snippetFriend.snippetId)
+    ): UserResourcePermission {
+        return snippetService.shareSnippet(userId, snippetFriend.friendId, snippetFriend.snippetId.toLong())
+    }
+
+    @GetMapping("users")
+    fun getUsers(
+        @RequestParam pageNumber: Int,
+        @RequestParam pageSize: Int,
+    ): Page<String> {
+        return snippetService.getUsers(pageNumber, pageSize)
     }
 }

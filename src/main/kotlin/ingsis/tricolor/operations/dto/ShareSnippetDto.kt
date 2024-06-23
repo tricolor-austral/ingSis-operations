@@ -1,6 +1,6 @@
 package ingsis.tricolor.operations.dto
 
 class ShareSnippetDto(
-    val snippetId: Long,
+    val snippetId: String,
     val friendId: String,
 )
