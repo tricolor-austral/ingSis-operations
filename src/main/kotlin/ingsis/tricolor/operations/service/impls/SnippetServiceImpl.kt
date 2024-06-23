@@ -3,8 +3,8 @@ package ingsis.tricolor.operations.service.impls
 import ingsis.tricolor.operations.dto.GetSnippetDto
 import ingsis.tricolor.operations.dto.SnippetCreateDto
 import ingsis.tricolor.operations.dto.UpdateSnippetDto
-import ingsis.tricolor.operations.dto.apicalls.ResourcePermissionCreateDto
-import ingsis.tricolor.operations.dto.apicalls.UserResourcePermission
+import ingsis.tricolor.operations.dto.permissions.ResourcePermissionCreateDto
+import ingsis.tricolor.operations.dto.permissions.UserResourcePermission
 import ingsis.tricolor.operations.entity.Snippet
 import ingsis.tricolor.operations.error.NotFoundException
 import ingsis.tricolor.operations.error.UnauthorizedException
@@ -43,7 +43,6 @@ class SnippetServiceImpl
             size: Int,
         ): Page<GetSnippetDto> {
             val resources = apiCalls.getAllUserResources(userId)
-//            val resources = listOf<PermissionCreateResponse>();
             val context = snippetRepositoryCrud.findAllById(resources.map { it.resourceId.toLong() })
             val snippets =
                 context.map {
@@ -62,6 +61,17 @@ class SnippetServiceImpl
             if (permission.isEmpty()) throw UnauthorizedException("User cannot acces this snippet")
             val content = apiCalls.getSnippet(snippetId.toString())
             return GetSnippetDto.from(context, content)
+        }
+
+        override fun getAllSnippetsByUser(userId: String): List<GetSnippetDto> {
+            val resources = apiCalls.getAllUserResources(userId)
+            val context = snippetRepositoryCrud.findAllById(resources.map { it.resourceId.toLong() })
+            val snippets =
+                context.map {
+                    val content = apiCalls.getSnippet(it.id.toString())
+                    GetSnippetDto.from(it, content)
+                }
+            return snippets
         }
 
         override fun updateSnippet(

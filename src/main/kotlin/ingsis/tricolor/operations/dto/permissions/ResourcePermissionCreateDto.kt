@@ -1,4 +1,4 @@
-package ingsis.tricolor.operations.dto.apicalls
+package ingsis.tricolor.operations.dto.permissions
 
 class ResourcePermissionCreateDto(
     val userId: String,

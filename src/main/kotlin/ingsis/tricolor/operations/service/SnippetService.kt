@@ -3,7 +3,7 @@ package ingsis.tricolor.operations.service
 import ingsis.tricolor.operations.dto.GetSnippetDto
 import ingsis.tricolor.operations.dto.SnippetCreateDto
 import ingsis.tricolor.operations.dto.UpdateSnippetDto
-import ingsis.tricolor.operations.dto.apicalls.UserResourcePermission
+import ingsis.tricolor.operations.dto.permissions.UserResourcePermission
 import ingsis.tricolor.operations.entity.Snippet
 import org.springframework.data.domain.Page
 
@@ -20,6 +20,8 @@ interface SnippetService {
         userId: String,
         snippetId: Long,
     ): GetSnippetDto
+
+    fun getAllSnippetsByUser(userId: String): List<GetSnippetDto>
 
     fun updateSnippet(
         userId: String,
@@ -42,5 +44,5 @@ interface SnippetService {
     fun getUsers(
         pageNumber: Int,
         pageSize: Int,
-    ): Page<String>
+    ): Page<String> // TODO: armarle un repositorio para los users
 }

@@ -1,6 +1,11 @@
 package ingsis.tricolor.operations.service.impls
 
-import ingsis.tricolor.operations.dto.apicalls.*
+import ingsis.tricolor.operations.dto.execution.ChangeRulesDto
+import ingsis.tricolor.operations.dto.execution.ExecutionDataDto
+import ingsis.tricolor.operations.dto.execution.ExecutionResponseDto
+import ingsis.tricolor.operations.dto.execution.Rules
+import ingsis.tricolor.operations.dto.permissions.*
+import ingsis.tricolor.operations.error.HttpException
 import ingsis.tricolor.operations.error.NotFoundException
 import ingsis.tricolor.operations.error.UnauthorizedException
 import ingsis.tricolor.operations.service.APICalls
@@ -11,14 +16,17 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
+import java.util.*
 
 @Service
 class DefaultApiCalls(
     @Value("\${permission.url}") permissionUrl: String,
     @Value("\${asset.url}") assetUrl: String,
+    @Value("runner.url") runnerUrl: String,
 ) : APICalls {
     private val permissionApi = WebClient.builder().baseUrl("http://$permissionUrl").build()
     private val assetServiceApi = WebClient.builder().baseUrl("http://$assetUrl/v1/asset").build()
+    private val runnerApi = WebClient.builder().baseUrl("http://$runnerUrl").build()
 
     override fun createResourcePermission(resourceData: ResourcePermissionCreateDto): Boolean {
         try {
@@ -142,5 +150,66 @@ class DefaultApiCalls(
             }
             .block() ?: throw NotFoundException()
         return true
+    }
+
+    override fun formatSnippet(data: ExecutionDataDto): ExecutionResponseDto {
+        return runnerApi.post()
+            .uri("/format")
+            .bodyValue(data)
+            .retrieve()
+            .bodyToMono(ExecutionResponseDto::class.java)
+            .block() ?: throw HttpException("Could not format correctly", HttpStatus.EXPECTATION_FAILED)
+    }
+
+    override fun getFormatRules(
+        userId: String,
+        correlationId: UUID,
+    ): List<Rules> {
+        return runnerApi.get()
+            .uri("/format/$userId")
+            .retrieve()
+            .bodyToMono(object : ParameterizedTypeReference<List<Rules>>() {})
+            .block() ?: throw HttpException("Could not ger rules", HttpStatus.EXPECTATION_FAILED)
+    }
+
+    override fun getLintRules(
+        userId: String,
+        correlationId: UUID,
+    ): List<Rules> {
+        return runnerApi.get()
+            .uri("/lint/$userId")
+            .retrieve()
+            .bodyToMono(object : ParameterizedTypeReference<List<Rules>>() {})
+            .block() ?: throw HttpException("Could not ger rules", HttpStatus.EXPECTATION_FAILED)
+    }
+
+    override fun changeFormatRules(
+        userId: String,
+        rules: List<Rules>,
+        snippets: List<ExecutionDataDto>,
+        correlationId: UUID,
+    ) {
+        val data = ChangeRulesDto(userId, rules, snippets, correlationId)
+        runnerApi.put()
+            .uri("/redis/format")
+            .bodyValue(data)
+            .retrieve()
+            .bodyToMono(Unit::class.java)
+            .block() ?: throw HttpException("Error formatting rules", HttpStatus.EXPECTATION_FAILED)
+    }
+
+    override fun changeLintRules(
+        userId: String,
+        rules: List<Rules>,
+        snippets: List<ExecutionDataDto>,
+        correlationId: UUID,
+    ) {
+        val data = ChangeRulesDto(userId, rules, snippets, correlationId)
+        runnerApi.put()
+            .uri("/redis/lint")
+            .bodyValue(data)
+            .retrieve()
+            .bodyToMono(Unit::class.java)
+            .block() ?: throw HttpException("Error linting rules", HttpStatus.EXPECTATION_FAILED)
     }
 }

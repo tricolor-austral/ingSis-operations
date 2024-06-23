@@ -6,10 +6,11 @@ import ingsis.tricolor.operations.dto.GetSnippetDto
 import ingsis.tricolor.operations.dto.ShareSnippetDto
 import ingsis.tricolor.operations.dto.SnippetCreateDto
 import ingsis.tricolor.operations.dto.UpdateSnippetDto
-import ingsis.tricolor.operations.dto.apicalls.UserResourcePermission
+import ingsis.tricolor.operations.dto.permissions.UserResourcePermission
 import ingsis.tricolor.operations.entity.Snippet
 import ingsis.tricolor.operations.error.HttpException
 import ingsis.tricolor.operations.service.SnippetService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.*
 @CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 @RestController
 @RequestMapping("/snippets")
-class SnippetController(val snippetService: SnippetService) {
+class SnippetController(
+    @Autowired val snippetService: SnippetService,
+) {
     @ExceptionHandler(HttpException::class)
     fun handleException(exception: HttpException): ResponseEntity<String> {
         return ResponseEntity(exception.message, exception.status)
