@@ -16,6 +16,11 @@ interface SnippetService {
         size: Int,
     ): Page<GetSnippetDto>
 
+    fun getSnippetById(
+        userId: String,
+        snippetId: Long,
+    ): GetSnippetDto
+
     fun updateSnippet(
         userId: String,
         updateSnippetDto: UpdateSnippetDto,

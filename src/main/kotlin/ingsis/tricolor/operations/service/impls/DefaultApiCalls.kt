@@ -4,6 +4,7 @@ import ingsis.tricolor.operations.dto.apicalls.*
 import ingsis.tricolor.operations.error.NotFoundException
 import ingsis.tricolor.operations.error.UnauthorizedException
 import ingsis.tricolor.operations.service.APICalls
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -12,16 +13,22 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 
 @Service
-class DefaultApiCalls : APICalls {
-    private val permissionApi = WebClient.builder().baseUrl("http://localhost:8081").build()
-    private val assetServiceApi = WebClient.builder().baseUrl("http://localhost:8080/v1/asset").build()
+class DefaultApiCalls(
+    @Value("\${permission.url}") permissionUrl: String,
+    @Value("\${asset.url}") assetUrl: String,
+) : APICalls {
+    private val permissionApi = WebClient.builder().baseUrl("http://$permissionUrl").build()
+    private val assetServiceApi = WebClient.builder().baseUrl("http://$assetUrl/v1/asset").build()
 
     override fun createResourcePermission(resourceData: ResourcePermissionCreateDto): Boolean {
         try {
-            permissionApi.post()
-                .uri("/resource/create-resource")
-                .bodyValue(resourceData)
-                .retrieve()
+            val response =
+                permissionApi.post()
+                    .uri("/resource/create-resource")
+                    .bodyValue(resourceData)
+                    .retrieve()
+                    .bodyToMono(PermissionCreateResponse::class.java)
+                    .block()
             return true
         } catch (e: Error) {
             println(e.message)
@@ -32,7 +39,7 @@ class DefaultApiCalls : APICalls {
     override fun getAllUserResources(userId: String): List<PermissionCreateResponse> {
         val response =
             permissionApi.get()
-                .uri("/resource/all-by-userId{id}", userId)
+                .uri("/resource/all-by-userId?id=$userId")
                 .retrieve()
                 .bodyToMono(object : ParameterizedTypeReference<List<PermissionCreateResponse>>() {})
                 .block() ?: throw RuntimeException("Unable to fetch the resources")
@@ -111,15 +118,20 @@ class DefaultApiCalls : APICalls {
                 .retrieve()
                 .bodyToMono(String::class.java)
                 .block() ?: throw NotFoundException()
-        print(response)
         return response
     }
 
     override fun deleteSnippet(key: String): Boolean {
+        println("key: $key")
         assetServiceApi.delete()
             .uri("/snippets/{key}", key)
-            .retrieve()
-            .bodyToMono(Unit::class.java)
+            .exchangeToMono { clientResponse ->
+                if (clientResponse.statusCode() == HttpStatus.NO_CONTENT) {
+                    Mono.just(HttpStatus.OK)
+                } else {
+                    Mono.just(HttpStatus.BAD_REQUEST)
+                }
+            }
             .block() ?: throw NotFoundException()
         return true
     }
