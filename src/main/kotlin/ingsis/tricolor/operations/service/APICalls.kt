@@ -26,6 +26,8 @@ interface APICalls {
         otherId: String,
     ): UserResourcePermission
 
+    fun getUsers(): List<String>
+
     // Asset service:
     fun saveSnippet(
         key: String,

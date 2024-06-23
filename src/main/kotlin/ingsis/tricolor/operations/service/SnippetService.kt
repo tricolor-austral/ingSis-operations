@@ -38,4 +38,9 @@ interface SnippetService {
         friendId: String,
         snippetId: Long,
     ): UserResourcePermission
+
+    fun getUsers(
+        pageNumber: Int,
+        pageSize: Int,
+    ): Page<String>
 }

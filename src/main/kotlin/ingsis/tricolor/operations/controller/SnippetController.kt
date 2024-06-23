@@ -72,4 +72,12 @@ class SnippetController(val snippetService: SnippetService) {
     ): UserResourcePermission {
         return snippetService.shareSnippet(userId, snippetFriend.friendId, snippetFriend.snippetId.toLong())
     }
+
+    @GetMapping("users")
+    fun getUsers(
+        @RequestParam pageNumber: Int,
+        @RequestParam pageSize: Int,
+    ): Page<String> {
+        return snippetService.getUsers(pageNumber, pageSize)
+    }
 }

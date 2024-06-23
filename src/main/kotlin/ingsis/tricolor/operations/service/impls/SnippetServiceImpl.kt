@@ -103,6 +103,18 @@ class SnippetServiceImpl
             return apiCalls.shareResource(authorId, snippetId.toString(), friendId)
         }
 
+        override fun getUsers(
+            pageNumber: Int,
+            pageSize: Int,
+        ): Page<String> {
+            val snippets = apiCalls.getUsers()
+            val total = snippets.size
+            val start = (pageNumber * pageSize).coerceAtMost(total)
+            val end = (start + pageSize).coerceAtMost(total)
+            val subList = snippets.subList(start, end)
+            return PageImpl(subList, PageRequest.of(pageNumber, pageSize), total.toLong())
+        }
+
         private fun createResourcePermissions(
             snippetDto: SnippetCreateDto,
             savedSnippet: Snippet,

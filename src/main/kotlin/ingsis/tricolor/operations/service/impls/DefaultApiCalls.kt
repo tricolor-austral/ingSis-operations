@@ -85,6 +85,14 @@ class DefaultApiCalls(
             .block() ?: throw UnauthorizedException("User cannot share this resource as he is not the owner")
     }
 
+    override fun getUsers(): List<String> {
+        return permissionApi.get()
+            .uri("/user")
+            .retrieve()
+            .bodyToMono(object : ParameterizedTypeReference<List<String>>() {})
+            .block() ?: throw NotFoundException()
+    }
+
     override fun saveSnippet(
         key: String,
         snippet: String,
