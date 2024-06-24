@@ -5,8 +5,14 @@ import ingsis.tricolor.operations.dto.execution.Rule
 import ingsis.tricolor.operations.service.ExecutionService
 import ingsis.tricolor.operations.service.SnippetService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.*
-import java.util.*
+import org.springframework.web.bind.annotation.CrossOrigin
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 @RestController

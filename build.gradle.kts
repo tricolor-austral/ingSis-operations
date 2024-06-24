@@ -20,7 +20,6 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jlleitschuh.gradle:ktlint-gradle:12.1.0")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")

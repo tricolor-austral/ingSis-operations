@@ -4,7 +4,10 @@ import ingsis.tricolor.operations.dto.execution.ChangeRulesDto
 import ingsis.tricolor.operations.dto.execution.ExecutionDataDto
 import ingsis.tricolor.operations.dto.execution.ExecutionResponseDto
 import ingsis.tricolor.operations.dto.execution.Rule
-import ingsis.tricolor.operations.dto.permissions.*
+import ingsis.tricolor.operations.dto.permissions.PermissionCreateResponse
+import ingsis.tricolor.operations.dto.permissions.ResourcePermissionCreateDto
+import ingsis.tricolor.operations.dto.permissions.ShareResource
+import ingsis.tricolor.operations.dto.permissions.UserResourcePermission
 import ingsis.tricolor.operations.error.HttpException
 import ingsis.tricolor.operations.error.NotFoundException
 import ingsis.tricolor.operations.error.UnauthorizedException
@@ -16,7 +19,7 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
-import java.util.*
+import java.util.UUID
 
 @Service
 class DefaultApiCalls(
