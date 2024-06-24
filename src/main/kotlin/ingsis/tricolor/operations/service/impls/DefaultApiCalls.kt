@@ -3,7 +3,7 @@ package ingsis.tricolor.operations.service.impls
 import ingsis.tricolor.operations.dto.execution.ChangeRulesDto
 import ingsis.tricolor.operations.dto.execution.ExecutionDataDto
 import ingsis.tricolor.operations.dto.execution.ExecutionResponseDto
-import ingsis.tricolor.operations.dto.execution.Rules
+import ingsis.tricolor.operations.dto.execution.Rule
 import ingsis.tricolor.operations.dto.permissions.*
 import ingsis.tricolor.operations.error.HttpException
 import ingsis.tricolor.operations.error.NotFoundException
@@ -30,13 +30,12 @@ class DefaultApiCalls(
 
     override fun createResourcePermission(resourceData: ResourcePermissionCreateDto): Boolean {
         try {
-            val response =
-                permissionApi.post()
-                    .uri("/resource/create-resource")
-                    .bodyValue(resourceData)
-                    .retrieve()
-                    .bodyToMono(PermissionCreateResponse::class.java)
-                    .block()
+            permissionApi.post()
+                .uri("/resource/create-resource")
+                .bodyValue(resourceData)
+                .retrieve()
+                .bodyToMono(PermissionCreateResponse::class.java)
+                .block()
             return true
         } catch (e: Error) {
             println(e.message)
@@ -164,28 +163,28 @@ class DefaultApiCalls(
     override fun getFormatRules(
         userId: String,
         correlationId: UUID,
-    ): List<Rules> {
+    ): List<Rule> {
         return runnerApi.get()
             .uri("/format/$userId")
             .retrieve()
-            .bodyToMono(object : ParameterizedTypeReference<List<Rules>>() {})
+            .bodyToMono(object : ParameterizedTypeReference<List<Rule>>() {})
             .block() ?: throw HttpException("Could not ger rules", HttpStatus.EXPECTATION_FAILED)
     }
 
     override fun getLintRules(
         userId: String,
         correlationId: UUID,
-    ): List<Rules> {
+    ): List<Rule> {
         return runnerApi.get()
             .uri("/lint/$userId")
             .retrieve()
-            .bodyToMono(object : ParameterizedTypeReference<List<Rules>>() {})
+            .bodyToMono(object : ParameterizedTypeReference<List<Rule>>() {})
             .block() ?: throw HttpException("Could not ger rules", HttpStatus.EXPECTATION_FAILED)
     }
 
     override fun changeFormatRules(
         userId: String,
-        rules: List<Rules>,
+        rules: List<Rule>,
         snippets: List<ExecutionDataDto>,
         correlationId: UUID,
     ) {
@@ -200,7 +199,7 @@ class DefaultApiCalls(
 
     override fun changeLintRules(
         userId: String,
-        rules: List<Rules>,
+        rules: List<Rule>,
         snippets: List<ExecutionDataDto>,
         correlationId: UUID,
     ) {
