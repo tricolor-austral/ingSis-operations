@@ -2,7 +2,7 @@ package ingsis.tricolor.operations.service
 
 import ingsis.tricolor.operations.dto.execution.ExecutionDataDto
 import ingsis.tricolor.operations.dto.execution.ExecutionResponseDto
-import ingsis.tricolor.operations.dto.execution.Rules
+import ingsis.tricolor.operations.dto.execution.Rule
 import ingsis.tricolor.operations.dto.permissions.PermissionCreateResponse
 import ingsis.tricolor.operations.dto.permissions.ResourcePermissionCreateDto
 import ingsis.tricolor.operations.dto.permissions.UserResourcePermission
@@ -49,23 +49,23 @@ interface APICalls {
     fun getFormatRules(
         userId: String,
         correlationId: UUID,
-    ): List<Rules>
+    ): List<Rule>
 
     fun getLintRules(
         userId: String,
         correlationId: UUID,
-    ): List<Rules>
+    ): List<Rule>
 
     fun changeFormatRules(
         userId: String,
-        rules: List<Rules>,
+        rules: List<Rule>,
         snippets: List<ExecutionDataDto>,
         correlationId: UUID,
     )
 
     fun changeLintRules(
         userId: String,
-        rules: List<Rules>,
+        rules: List<Rule>,
         snippets: List<ExecutionDataDto>,
         correlationId: UUID,
     )

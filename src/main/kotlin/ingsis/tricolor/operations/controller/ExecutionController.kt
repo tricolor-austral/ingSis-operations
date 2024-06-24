@@ -1,7 +1,7 @@
 package ingsis.tricolor.operations.controller
 
 import ingsis.tricolor.operations.dto.SnippetContext
-import ingsis.tricolor.operations.dto.execution.Rules
+import ingsis.tricolor.operations.dto.execution.Rule
 import ingsis.tricolor.operations.service.ExecutionService
 import ingsis.tricolor.operations.service.SnippetService
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,22 +27,22 @@ class ExecutionController(
     @GetMapping("/format-rules")
     fun getFormatRules(
         @RequestParam userId: String,
-    ): List<Rules> {
+    ): List<Rule> {
         return execService.getFormatRules(userId, UUID.randomUUID())
     }
 
     @GetMapping("/lint-rules")
     fun getLintRules(
         @RequestParam userId: String,
-    ): List<Rules> {
+    ): List<Rule> {
         return execService.getLintRules(userId, UUID.randomUUID())
     }
 
     @PutMapping("/format-rules")
     fun changeFormatRules(
         @RequestParam userId: String,
-        @RequestBody rules: List<Rules>,
-    ): List<Rules> {
+        @RequestBody rules: List<Rule>,
+    ): List<Rule> {
         execService.changeFormatRules(userId, rules, UUID.randomUUID())
         return rules
     }
@@ -50,8 +50,8 @@ class ExecutionController(
     @PutMapping("/lint-rules")
     fun changeLinRules(
         @RequestParam userId: String,
-        @RequestBody rules: List<Rules>,
-    ): List<Rules> {
+        @RequestBody rules: List<Rule>,
+    ): List<Rule> {
         execService.changeFormatRules(userId, rules, UUID.randomUUID())
         return rules
     }

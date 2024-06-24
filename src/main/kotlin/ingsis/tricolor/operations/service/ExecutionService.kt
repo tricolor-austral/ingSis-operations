@@ -1,6 +1,6 @@
 package ingsis.tricolor.operations.service
 
-import ingsis.tricolor.operations.dto.execution.Rules
+import ingsis.tricolor.operations.dto.execution.Rule
 import java.util.UUID
 
 interface ExecutionService {
@@ -14,22 +14,22 @@ interface ExecutionService {
     fun getFormatRules(
         userId: String,
         correlationId: UUID,
-    ): List<Rules>
+    ): List<Rule>
 
     fun getLintRules(
         userId: String,
         correlationId: UUID,
-    ): List<Rules>
+    ): List<Rule>
 
     fun changeFormatRules(
         userId: String,
-        rules: List<Rules>,
+        rules: List<Rule>,
         correlationId: UUID,
     )
 
     fun changeLintRules(
         userId: String,
-        rules: List<Rules>,
+        rules: List<Rule>,
         correlationId: UUID,
     )
 }

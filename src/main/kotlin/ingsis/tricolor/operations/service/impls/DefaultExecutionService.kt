@@ -1,7 +1,7 @@
 package ingsis.tricolor.operations.service.impls
 
 import ingsis.tricolor.operations.dto.execution.ExecutionDataDto
-import ingsis.tricolor.operations.dto.execution.Rules
+import ingsis.tricolor.operations.dto.execution.Rule
 import ingsis.tricolor.operations.error.UnauthorizedException
 import ingsis.tricolor.operations.service.APICalls
 import ingsis.tricolor.operations.service.ExecutionService
@@ -32,20 +32,20 @@ class DefaultExecutionService(
     override fun getFormatRules(
         userId: String,
         correlationId: UUID,
-    ): List<Rules> {
+    ): List<Rule> {
         return apiCalls.getFormatRules(userId, correlationId)
     }
 
     override fun getLintRules(
         userId: String,
         correlationId: UUID,
-    ): List<Rules> {
+    ): List<Rule> {
         return apiCalls.getLintRules(userId, correlationId)
     }
 
     override fun changeFormatRules(
         userId: String,
-        rules: List<Rules>,
+        rules: List<Rule>,
         correlationId: UUID,
     ) {
         val snippets =
@@ -59,7 +59,7 @@ class DefaultExecutionService(
 
     override fun changeLintRules(
         userId: String,
-        rules: List<Rules>,
+        rules: List<Rule>,
         correlationId: UUID,
     ) {
         val snippets =
