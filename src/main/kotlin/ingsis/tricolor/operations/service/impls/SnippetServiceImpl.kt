@@ -3,7 +3,6 @@ package ingsis.tricolor.operations.service.impls
 import ingsis.tricolor.operations.dto.GetSnippetDto
 import ingsis.tricolor.operations.dto.SnippetCreateDto
 import ingsis.tricolor.operations.dto.UpdateSnippetDto
-import ingsis.tricolor.operations.dto.apicalls.PermissionCreateResponse
 import ingsis.tricolor.operations.dto.apicalls.ResourcePermissionCreateDto
 import ingsis.tricolor.operations.dto.apicalls.UserResourcePermission
 import ingsis.tricolor.operations.entity.Snippet
@@ -34,7 +33,7 @@ class SnippetServiceImpl
             val savedSnippet = this.snippetRepositoryCrud.save(snippet)
             println("snippet created")
             createResourcePermissions(snippetDto, savedSnippet)
-            saveSnippetOnAssetService(snippetDto.content, savedSnippet.id.toString())
+            saveSnippetOnAssetService(savedSnippet.id.toString(), snippetDto.content)
             return savedSnippet
         }
 
@@ -43,8 +42,8 @@ class SnippetServiceImpl
             page: Int,
             size: Int,
         ): Page<GetSnippetDto> {
-//            val resources = apiCalls.getAllUserResources(userId)
-            val resources = listOf<PermissionCreateResponse>();
+            val resources = apiCalls.getAllUserResources(userId)
+//            val resources = listOf<PermissionCreateResponse>();
             val context = snippetRepositoryCrud.findAllById(resources.map { it.resourceId.toLong() })
             val snippets =
                 context.map {
@@ -52,6 +51,17 @@ class SnippetServiceImpl
                     GetSnippetDto.from(it, content)
                 }
             return toPageable(snippets, page, size)
+        }
+
+        override fun getSnippetById(
+            userId: String,
+            snippetId: Long,
+        ): GetSnippetDto {
+            val context = snippetRepositoryCrud.findById(snippetId).orElse(null) ?: throw NotFoundException()
+            val permission = apiCalls.getAllUserResources(userId).filter { it.resourceId == snippetId.toString() }
+            if (permission.isEmpty()) throw UnauthorizedException("User cannot acces this snippet")
+            val content = apiCalls.getSnippet(snippetId.toString())
+            return GetSnippetDto.from(context, content)
         }
 
         override fun updateSnippet(
@@ -68,13 +78,20 @@ class SnippetServiceImpl
             userId: String,
             snippetId: Long,
         ) {
+            println("id: $snippetId")
             apiCalls.deleteResourcePermissions(userId, snippetId.toString())
+            println("deleted from resources")
             apiCalls.deleteSnippet(snippetId.toString())
-            snippetRepositoryCrud.deleteById(snippetId)
+            println("deleted from asset service")
+            val snippet = snippetRepositoryCrud.findById(snippetId).orElse(null)
+            if (snippet == null) {
+                println("snippet not found")
+                throw NotFoundException()
+            }
+            snippetRepositoryCrud.delete(snippet)
         }
 
         override fun getSnippet(id: String): String {
-            println("getting snippet with id: $id")
             return apiCalls.getSnippet(id)
         }
 
@@ -84,6 +101,18 @@ class SnippetServiceImpl
             snippetId: Long,
         ): UserResourcePermission {
             return apiCalls.shareResource(authorId, snippetId.toString(), friendId)
+        }
+
+        override fun getUsers(
+            pageNumber: Int,
+            pageSize: Int,
+        ): Page<String> {
+            val snippets = apiCalls.getUsers()
+            val total = snippets.size
+            val start = (pageNumber * pageSize).coerceAtMost(total)
+            val end = (start + pageSize).coerceAtMost(total)
+            val subList = snippets.subList(start, end)
+            return PageImpl(subList, PageRequest.of(pageNumber, pageSize), total.toLong())
         }
 
         private fun createResourcePermissions(
