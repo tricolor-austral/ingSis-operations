@@ -15,7 +15,7 @@ services:
 
 
   db:
-    container_name: 'postgres_db_ingsis'
+    container_name: 'operations-db'
     image: postgres:alpine
     ports:
       - 5432:5432
