@@ -53,29 +53,4 @@ class OAuth2ResourceServerSecurityConfiguration(
         return jwtDecoder
     }
 
-
-    @Bean
-    fun corsFilter(): org.springframework.web.filter.CorsFilter {
-        val source = UrlBasedCorsConfigurationSource()
-        val config = CorsConfiguration()
-        config.allowCredentials = true
-        config.addAllowedOrigin("http://localhost:3000")
-        config.addAllowedHeader("*")
-        config.addAllowedMethod("*")
-        source.registerCorsConfiguration("/", config)
-        return org.springframework.web.filter.CorsFilter(source)
-        }
-
 }
-
-@Configuration
-class WebConfig : WebMvcConfigurer {
-    override fun addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("*")
-            .allowedOrigins("*") // Ajusta esto para que coincida con la URL de tu frontend
-            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-            .allowedHeaders("*")
-            .allowCredentials(true)
-        }
-}
-
