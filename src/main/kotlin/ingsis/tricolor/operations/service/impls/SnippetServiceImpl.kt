@@ -26,14 +26,18 @@ class SnippetServiceImpl
         val snippetRepositoryCrud: SnippetRepositoryCrud,
         val apiCalls: APICalls,
     ) : SnippetService {
-        override fun createSnippet(snippetDto: SnippetCreateDto): Snippet {
+        override fun createSnippet(
+            snippetDto: SnippetCreateDto,
+            correlationId: String,
+        ): Snippet {
             // TODO: manejar error id ya existe
             println("creating snippet...")
             val snippet = Snippet.from(snippetDto)
             val savedSnippet = this.snippetRepositoryCrud.save(snippet)
             println("snippet created")
-            createResourcePermissions(snippetDto, savedSnippet)
-            saveSnippetOnAssetService(savedSnippet.id.toString(), snippetDto.content)
+            createResourcePermissions(snippetDto, savedSnippet, correlationId)
+            saveSnippetOnAssetService(savedSnippet.id.toString(), snippetDto.content, correlationId)
+
             return savedSnippet
         }
 
@@ -77,10 +81,11 @@ class SnippetServiceImpl
         override fun updateSnippet(
             userId: String,
             updateSnippetDto: UpdateSnippetDto,
+            correlationId: String,
         ): GetSnippetDto {
             val snippet = checkSnippetExists(updateSnippetDto.id)
             checkUserCanModify(userId, updateSnippetDto.id.toString())
-            saveSnippetOnAssetService(updateSnippetDto.id.toString(), updateSnippetDto.content)
+            saveSnippetOnAssetService(updateSnippetDto.id.toString(), updateSnippetDto.content, correlationId)
             return GetSnippetDto.from(snippet, updateSnippetDto.content)
         }
 
@@ -128,20 +133,22 @@ class SnippetServiceImpl
         private fun createResourcePermissions(
             snippetDto: SnippetCreateDto,
             savedSnippet: Snippet,
+            correlationId: String,
         ) {
             println("creating permissions for snippet...")
             val permissions = listOf("READ", "WRITE")
             val dto = ResourcePermissionCreateDto(snippetDto.authorId, savedSnippet.id.toString(), permissions)
-            apiCalls.createResourcePermission(dto)
+            apiCalls.createResourcePermission(dto, correlationId)
             println("permissions created")
         }
 
         private fun saveSnippetOnAssetService(
             id: String,
             content: String,
+            correlationId: String,
         ) {
             println("saving on asset service...")
-            apiCalls.saveSnippet(id, content)
+            apiCalls.saveSnippet(id, content, correlationId)
             println("asset saved!")
         }
 

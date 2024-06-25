@@ -8,7 +8,10 @@ import ingsis.tricolor.operations.entity.Snippet
 import org.springframework.data.domain.Page
 
 interface SnippetService {
-    fun createSnippet(snippetDto: SnippetCreateDto): Snippet
+    fun createSnippet(
+        snippetDto: SnippetCreateDto,
+        correlationId: String,
+    ): Snippet
 
     fun getSnippets(
         userId: String,
@@ -26,6 +29,7 @@ interface SnippetService {
     fun updateSnippet(
         userId: String,
         updateSnippetDto: UpdateSnippetDto,
+        correlationId: String,
     ): GetSnippetDto
 
     fun deleteSnippet(

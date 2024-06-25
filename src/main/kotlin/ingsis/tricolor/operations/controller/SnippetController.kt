@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ServerWebExchange
 
 @CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 @RestController
@@ -29,8 +30,10 @@ class SnippetController(
     @PostMapping()
     fun createSnippet(
         @RequestBody snippetDto: SnippetCreateDto,
+        exchange: ServerWebExchange,
     ): Snippet {
-        return snippetService.createSnippet(snippetDto)
+        val correlationId = exchange.getAttribute<String>(CorrelationIdFilter.CORRELATION_ID_KEY) ?: "default-correlation-id"
+        return snippetService.createSnippet(snippetDto, correlationId)
     }
 
     @GetMapping()
@@ -38,8 +41,10 @@ class SnippetController(
         @RequestParam userId: String,
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int,
+        exchange: ServerWebExchange,
     ): Page<GetSnippetDto> {
         println("getSnippets")
+        val correlationId = exchange.getAttribute<String>(CorrelationIdFilter.CORRELATION_ID_KEY)
         return snippetService.getSnippets(userId, pageNumber, pageSize)
     }
 
@@ -47,7 +52,9 @@ class SnippetController(
     fun getSnippetById(
         @RequestParam userId: String,
         @RequestParam snippetId: String,
+        exchange: ServerWebExchange,
     ): GetSnippetDto {
+        val correlationId = exchange.getAttribute<String>(CorrelationIdFilter.CORRELATION_ID_KEY)
         return snippetService.getSnippetById(userId, snippetId.toLong())
     }
 
@@ -55,8 +62,10 @@ class SnippetController(
     fun updateSnippet(
         @RequestParam userId: String,
         @RequestBody updateSnippetDto: UpdateSnippetDto,
+        exchange: ServerWebExchange,
     ): GetSnippetDto {
-        return snippetService.updateSnippet(userId, updateSnippetDto)
+        val correlationId = exchange.getAttribute<String>(CorrelationIdFilter.CORRELATION_ID_KEY) ?: "default-correlation-id"
+        return snippetService.updateSnippet(userId, updateSnippetDto, correlationId)
     }
 
     @DeleteMapping("")

@@ -10,7 +10,10 @@ import java.util.UUID
 
 interface APICalls {
     // Permissions API:
-    fun createResourcePermission(resourceData: ResourcePermissionCreateDto): Boolean
+    fun createResourcePermission(
+        resourceData: ResourcePermissionCreateDto,
+        correlationId: String,
+    ): Boolean
 
     fun getAllUserResources(userId: String): List<PermissionCreateResponse>
 
@@ -36,6 +39,7 @@ interface APICalls {
     fun saveSnippet(
         key: String,
         snippet: String,
+        correlationId: String,
     ): Boolean
 
     fun getSnippet(key: String): String

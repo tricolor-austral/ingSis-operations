@@ -31,7 +31,10 @@ class DefaultApiCalls(
     private val assetServiceApi = WebClient.builder().baseUrl("http://$assetUrl/v1/asset").build()
     private val runnerApi = WebClient.builder().baseUrl("http://$runnerUrl").build()
 
-    override fun createResourcePermission(resourceData: ResourcePermissionCreateDto): Boolean {
+    override fun createResourcePermission(
+        resourceData: ResourcePermissionCreateDto,
+        correlationId: String,
+    ): Boolean {
         try {
             permissionApi.post()
                 .uri("/resource/create-resource")
@@ -106,12 +109,14 @@ class DefaultApiCalls(
     override fun saveSnippet(
         key: String,
         snippet: String,
+        correlationId: String,
     ): Boolean {
         try {
             val responseStatus =
                 assetServiceApi.post()
                     .uri("/snippets/{key}", key)
                     .contentType(MediaType.APPLICATION_JSON)
+                    .header("correlationId", correlationId.toString())
                     .bodyValue(snippet)
                     .exchangeToMono { clientResponse ->
                         if (clientResponse.statusCode() == HttpStatus.CREATED) {
