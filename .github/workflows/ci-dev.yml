@@ -43,4 +43,4 @@ jobs:
                 script: |
                   cd ingSis-microservices
                   sudo docker-compose -f docker-compose.dev.yml stop operations-api
-                  sudo docker-compose -f docker-compose.dev.yml up operations-api -d --build
+                  sudo docker-compose -f docker-compose.dev.yml up --build operation-api
