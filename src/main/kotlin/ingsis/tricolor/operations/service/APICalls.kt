@@ -1,8 +1,12 @@
 package ingsis.tricolor.operations.service
 
-import ingsis.tricolor.operations.dto.apicalls.PermissionCreateResponse
-import ingsis.tricolor.operations.dto.apicalls.ResourcePermissionCreateDto
-import ingsis.tricolor.operations.dto.apicalls.UserResourcePermission
+import ingsis.tricolor.operations.dto.execution.ExecutionDataDto
+import ingsis.tricolor.operations.dto.execution.ExecutionResponseDto
+import ingsis.tricolor.operations.dto.execution.Rule
+import ingsis.tricolor.operations.dto.permissions.PermissionCreateResponse
+import ingsis.tricolor.operations.dto.permissions.ResourcePermissionCreateDto
+import ingsis.tricolor.operations.dto.permissions.UserResourcePermission
+import java.util.UUID
 
 interface APICalls {
     // Permissions API:
@@ -39,4 +43,30 @@ interface APICalls {
     fun deleteSnippet(key: String): Boolean
 
     // Runner API:
+
+    fun formatSnippet(data: ExecutionDataDto): ExecutionResponseDto
+
+    fun getFormatRules(
+        userId: String,
+        correlationId: UUID,
+    ): List<Rule>
+
+    fun getLintRules(
+        userId: String,
+        correlationId: UUID,
+    ): List<Rule>
+
+    fun changeFormatRules(
+        userId: String,
+        rules: List<Rule>,
+        snippets: List<ExecutionDataDto>,
+        correlationId: UUID,
+    )
+
+    fun changeLintRules(
+        userId: String,
+        rules: List<Rule>,
+        snippets: List<ExecutionDataDto>,
+        correlationId: UUID,
+    )
 }
