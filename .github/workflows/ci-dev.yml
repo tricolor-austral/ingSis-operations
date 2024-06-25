@@ -34,3 +34,13 @@ jobs:
                       "TOKEN=${{ secrets.DOCKER_PACKAGES_SECRET }}"
 
                   push: true
+            - name: Refresh container
+              uses: appleboy/ssh-action@master
+              with:
+                host: ${{ secrets.HOST }}
+                username: "ingsis-dev"
+                key: ${{ secrets.INGSIS_DEV_KEY }}
+                script: |
+                  cd operations-api
+                  docker-compose -f docker-compose.dev.yml stop operations-api
+                  docker-compose -f docker-compose.dev.yml up -d --build operations-api
