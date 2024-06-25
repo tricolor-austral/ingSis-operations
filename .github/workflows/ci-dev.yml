@@ -41,6 +41,6 @@ jobs:
                 username: "ingsis-dev"
                 key: ${{ secrets.INGSIS_DEV_KEY }}
                 script: |
-                  cd operations-api
+                  cd ingSis-microservices
                   docker-compose -f docker-compose.dev.yml stop operations-api
-                  docker-compose -f docker-compose.dev.yml up -d --build operations-api
+                  docker-compose -f docker-compose.dev.yml up operations-api -d --build
