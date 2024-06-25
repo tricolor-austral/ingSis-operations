@@ -26,6 +26,7 @@ class SnippetController(
         return ResponseEntity(exception.message, exception.status)
     }
 
+
     @PostMapping()
     fun createSnippet(
         @RequestBody snippetDto: SnippetCreateDto,
