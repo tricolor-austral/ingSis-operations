@@ -1,27 +1,28 @@
 
+import jakarta.servlet.FilterChain
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.MDC
 import org.springframework.stereotype.Component
-import org.springframework.web.server.ServerWebExchange
-import org.springframework.web.server.WebFilter
-import org.springframework.web.server.WebFilterChain
-import reactor.core.publisher.Mono
+import org.springframework.web.filter.OncePerRequestFilter
 import java.util.UUID
 
 @Component
-class CorrelationIdFilter : WebFilter {
+class CorrelationIdFilter : OncePerRequestFilter() {
     companion object {
         const val CORRELATION_ID_KEY = "correlation-id"
         private const val CORRELATION_ID_HEADER = "X-Correlation-Id"
     }
 
-    override fun filter(
-        exchange: ServerWebExchange,
-        chain: WebFilterChain,
-    ): Mono<Void> {
-        val correlationId: String = exchange.request.headers[CORRELATION_ID_HEADER]?.firstOrNull() ?: UUID.randomUUID().toString()
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain,
+    ) {
+        val correlationId: String = request.getHeader(CORRELATION_ID_HEADER) ?: UUID.randomUUID().toString()
         MDC.put(CORRELATION_ID_KEY, correlationId)
         try {
-            return chain.filter(exchange)
+            filterChain.doFilter(request, response)
         } finally {
             MDC.remove(CORRELATION_ID_KEY)
         }
