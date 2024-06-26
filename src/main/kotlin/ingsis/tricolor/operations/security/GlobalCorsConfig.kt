@@ -9,7 +9,7 @@ class GlobalCorsConfig {
     @Bean
     fun corsFilter(): CorsConfiguration {
         val config = CorsConfiguration()
-        config.allowCredentials = true
+        config.allowCredentials = false
         config.addAllowedOrigin("*")
         config.addAllowedHeader("*")
         config.addAllowedMethod("*")
