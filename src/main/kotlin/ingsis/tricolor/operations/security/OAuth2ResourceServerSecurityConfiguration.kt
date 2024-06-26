@@ -3,7 +3,6 @@
 package ingsis.tricolor.operations.security
 
 import AudienceValidator
-import org.apache.catalina.filters.CorsFilter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,12 +14,8 @@ import org.springframework.security.oauth2.core.OAuth2TokenValidator
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.JwtValidators
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder.*
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder.withIssuerLocation
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import org.springframework.web.servlet.config.annotation.CorsRegistry
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 @EnableWebSecurity
@@ -52,5 +47,4 @@ class OAuth2ResourceServerSecurityConfiguration(
         jwtDecoder.setJwtValidator(withAudience)
         return jwtDecoder
     }
-
 }

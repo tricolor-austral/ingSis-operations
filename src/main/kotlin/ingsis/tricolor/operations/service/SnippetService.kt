@@ -53,5 +53,6 @@ interface SnippetService {
     fun updateFormattedLintedSnippet(
         snippetId: Long,
         content: String,
+        correlationId: String,
     )
 }

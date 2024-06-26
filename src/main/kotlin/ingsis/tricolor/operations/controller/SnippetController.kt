@@ -13,7 +13,16 @@ import ingsis.tricolor.operations.service.SnippetService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.CrossOrigin
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ServerWebExchange
 
 @CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
@@ -26,7 +35,6 @@ class SnippetController(
     fun handleException(exception: HttpException): ResponseEntity<String> {
         return ResponseEntity(exception.message, exception.status)
     }
-
 
     @PostMapping()
     fun createSnippet(
@@ -42,10 +50,8 @@ class SnippetController(
         @RequestParam userId: String,
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int,
-        exchange: ServerWebExchange,
     ): Page<GetSnippetDto> {
         println("getSnippets")
-        val correlationId = exchange.getAttribute<String>(CorrelationIdFilter.CORRELATION_ID_KEY)
         return snippetService.getSnippets(userId, pageNumber, pageSize)
     }
 
@@ -53,9 +59,7 @@ class SnippetController(
     fun getSnippetById(
         @RequestParam userId: String,
         @RequestParam snippetId: String,
-        exchange: ServerWebExchange,
     ): GetSnippetDto {
-        val correlationId = exchange.getAttribute<String>(CorrelationIdFilter.CORRELATION_ID_KEY)
         return snippetService.getSnippetById(userId, snippetId.toLong())
     }
 
