@@ -3,10 +3,12 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
+import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
+@Order(2)
 class RequestLogFilter : OncePerRequestFilter() {
     val logger = LoggerFactory.getLogger(RequestLogFilter::class.java)
 
@@ -20,6 +22,9 @@ class RequestLogFilter : OncePerRequestFilter() {
         val prefix = "$method $uri"
         try {
             return filterChain.doFilter(request, response)
+        } catch (e: Exception) {
+            logger.error("Exception processing request", e)
+            throw e
         } finally {
             val statusCode = response.status
             logger.info("$prefix - $statusCode")
