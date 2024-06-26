@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.core.OAuth2TokenValidator
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.JwtValidators
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder.*
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder.withIssuerLocation
 import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
@@ -29,11 +29,11 @@ class OAuth2ResourceServerSecurityConfiguration(
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.authorizeHttpRequests {
             it
-                .requestMatchers("/").permitAll()
+                .requestMatchers("/run/update-snippet").permitAll()
                 .anyRequest().authenticated()
         }
             .oauth2ResourceServer { it.jwt(Customizer.withDefaults()) }
-            .cors { it.disable() }
+            .cors { it.configurationSource { GlobalCorsConfig().corsFilter() } }
             .csrf { it.disable() }
         return http.build()
     }

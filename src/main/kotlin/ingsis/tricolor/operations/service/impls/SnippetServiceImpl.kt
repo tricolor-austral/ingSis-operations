@@ -9,7 +9,6 @@ import ingsis.tricolor.operations.entity.Snippet
 import ingsis.tricolor.operations.error.NotFoundException
 import ingsis.tricolor.operations.error.UnauthorizedException
 import ingsis.tricolor.operations.repository.SnippetRepositoryCrud
-import ingsis.tricolor.operations.repository.SnippetRepositoryPage
 import ingsis.tricolor.operations.service.APICalls
 import ingsis.tricolor.operations.service.SnippetService
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service
 class SnippetServiceImpl
     @Autowired
     constructor(
-        val snippetRepositoryPage: SnippetRepositoryPage,
         val snippetRepositoryCrud: SnippetRepositoryCrud,
         val apiCalls: APICalls,
     ) : SnippetService {
@@ -128,6 +126,14 @@ class SnippetServiceImpl
             val end = (start + pageSize).coerceAtMost(total)
             val subList = snippets.subList(start, end)
             return PageImpl(subList, PageRequest.of(pageNumber, pageSize), total.toLong())
+        }
+
+        override fun updateFormattedLintedSnippet(
+            snippetId: Long,
+            content: String,
+            correlationId: String,
+        ) {
+            apiCalls.saveSnippet(snippetId.toString(), content, correlationId)
         }
 
         private fun createResourcePermissions(

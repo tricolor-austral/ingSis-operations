@@ -1,6 +1,7 @@
 package ingsis.tricolor.operations.controller
 
 import ingsis.tricolor.operations.dto.SnippetContext
+import ingsis.tricolor.operations.dto.UpdateSnippetDto
 import ingsis.tricolor.operations.dto.execution.Rule
 import ingsis.tricolor.operations.service.ExecutionService
 import ingsis.tricolor.operations.service.SnippetService
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.server.ServerWebExchange
 import java.util.UUID
 
 @CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
@@ -60,5 +62,14 @@ class ExecutionController(
     ): List<Rule> {
         execService.changeFormatRules(userId, rules, UUID.randomUUID())
         return rules
+    }
+
+    @PutMapping("/update-snippet")
+    fun updateSnippet(
+        @RequestBody snippet: UpdateSnippetDto,
+        exchange: ServerWebExchange,
+    ) {
+        val correlationId = exchange.getAttribute<String>(CorrelationIdFilter.CORRELATION_ID_KEY) ?: "default-correlation-id"
+        snippetService.updateFormattedLintedSnippet(snippet.id, snippet.content, correlationId)
     }
 }
