@@ -49,4 +49,9 @@ interface SnippetService {
         pageNumber: Int,
         pageSize: Int,
     ): Page<String> // TODO: armarle un repositorio para los users
+
+    fun updateFormattedLintedSnippet(
+        snippetId: Long,
+        content: String,
+    )
 }

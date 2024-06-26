@@ -3,6 +3,7 @@
 package ingsis.tricolor.operations.security
 
 import AudienceValidator
+import org.apache.catalina.filters.CorsFilter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,6 +17,10 @@ import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.JwtValidators
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder.*
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.servlet.config.annotation.CorsRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 @EnableWebSecurity
@@ -29,11 +34,11 @@ class OAuth2ResourceServerSecurityConfiguration(
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.authorizeHttpRequests {
             it
-                .requestMatchers("/").permitAll()
+                .requestMatchers("/run/update-snippet").permitAll()
                 .anyRequest().authenticated()
         }
             .oauth2ResourceServer { it.jwt(Customizer.withDefaults()) }
-            .cors { it.disable() }
+            .cors { it.configurationSource { GlobalCorsConfig().corsFilter() } }
             .csrf { it.disable() }
         return http.build()
     }
@@ -47,4 +52,5 @@ class OAuth2ResourceServerSecurityConfiguration(
         jwtDecoder.setJwtValidator(withAudience)
         return jwtDecoder
     }
+
 }

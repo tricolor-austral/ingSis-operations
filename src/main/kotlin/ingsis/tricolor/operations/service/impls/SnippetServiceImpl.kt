@@ -130,6 +130,13 @@ class SnippetServiceImpl
             return PageImpl(subList, PageRequest.of(pageNumber, pageSize), total.toLong())
         }
 
+        override fun updateFormattedLintedSnippet(
+            snippetId: Long,
+            content: String,
+        ) {
+            apiCalls.saveSnippet(snippetId.toString(), content)
+        }
+
         private fun createResourcePermissions(
             snippetDto: SnippetCreateDto,
             savedSnippet: Snippet,
