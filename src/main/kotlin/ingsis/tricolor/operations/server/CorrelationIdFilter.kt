@@ -30,6 +30,7 @@ class CorrelationIdFilter : OncePerRequestFilter() {
             throw e
         } finally {
             MDC.remove(CORRELATION_ID_KEY)
+            logger.info(request.method + " " + request.requestURI + " - " + response.status)
         }
     }
 }
