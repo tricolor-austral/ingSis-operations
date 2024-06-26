@@ -25,7 +25,7 @@ import java.util.UUID
 class DefaultApiCalls(
     @Value("\${permission.url}") permissionUrl: String,
     @Value("\${asset.url}") assetUrl: String,
-    @Value("runner.url") runnerUrl: String,
+    @Value("\${runner.url}") runnerUrl: String,
 ) : APICalls {
     private val permissionApi = WebClient.builder().baseUrl("http://$permissionUrl").build()
     private val assetServiceApi = WebClient.builder().baseUrl("http://$assetUrl/v1/asset").build()
