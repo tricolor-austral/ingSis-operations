@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.server.ServerWebExchange
+import java.util.UUID
 
 @CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 @RestController
@@ -37,9 +37,8 @@ class SnippetController(
     @PostMapping()
     fun createSnippet(
         @RequestBody snippetDto: SnippetCreateDto,
-        exchange: ServerWebExchange,
     ): Snippet {
-        val correlationId = exchange.getAttribute<String>(CorrelationIdFilter.CORRELATION_ID_KEY) ?: "default-correlation-id"
+        val correlationId =  UUID.randomUUID().toString()
         return snippetService.createSnippet(snippetDto, correlationId)
     }
 
@@ -63,9 +62,8 @@ class SnippetController(
     fun updateSnippet(
         @RequestParam userId: String,
         @RequestBody updateSnippetDto: UpdateSnippetDto,
-        exchange: ServerWebExchange,
     ): GetSnippetDto {
-        val correlationId = exchange.getAttribute<String>(CorrelationIdFilter.CORRELATION_ID_KEY) ?: "default-correlation-id"
+        val correlationId = UUID.randomUUID().toString()
         return snippetService.updateSnippet(userId, updateSnippetDto, correlationId)
     }
 
