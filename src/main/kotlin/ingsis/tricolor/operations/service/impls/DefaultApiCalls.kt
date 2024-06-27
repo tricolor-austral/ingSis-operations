@@ -232,7 +232,7 @@ class DefaultApiCalls(
         return runnerApi
             .post()
             .uri("/test")
-            .bodyValue(mapOf("content" to snippet, "input" to input, "output" to output))
+            .bodyValue(mapOf("snippet" to snippet, "input" to input, "output" to output))
             .retrieve()
             .bodyToMono(String::class.java)
             .block() ?: throw HttpException("Could not run test", HttpStatus.EXPECTATION_FAILED)

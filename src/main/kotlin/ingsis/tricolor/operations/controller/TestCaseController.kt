@@ -45,7 +45,7 @@ class TestCaseController(
     fun runTestCase(
         @RequestParam testCaseId: Long,
     ): String {
-        println("1" + testCaseId)
+        println("1$testCaseId")
         return testCaseService.runTestCase(testCaseId)
     }
 }
