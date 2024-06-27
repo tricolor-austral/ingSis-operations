@@ -208,9 +208,6 @@ class DefaultApiCalls(
             .put()
             .uri("/redis/format")
             .bodyValue(data)
-            .retrieve()
-            .bodyToMono(Unit::class.java)
-            .block() ?: throw HttpException("Error formatting rules", HttpStatus.EXPECTATION_FAILED)
     }
 
     override fun changeLintRules(
