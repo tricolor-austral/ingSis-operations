@@ -14,7 +14,6 @@ import ingsis.tricolor.operations.error.NotFoundException
 import ingsis.tricolor.operations.error.UnauthorizedException
 import ingsis.tricolor.operations.service.APICalls
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.ssl.DefaultSslBundleRegistry
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -243,13 +242,12 @@ class DefaultApiCalls(
         snippet: String,
         input: String,
         output: List<String>,
-    ): String {
-        return runnerApi
+    ): String =
+        runnerApi
             .post()
             .uri("/test")
             .bodyValue(mapOf("snippet" to snippet, "input" to input, "output" to output))
             .retrieve()
             .bodyToMono(String::class.java)
             .block() ?: throw HttpException("Could not run test", HttpStatus.EXPECTATION_FAILED)
-    }
 }
