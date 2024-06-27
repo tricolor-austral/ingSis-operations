@@ -54,6 +54,12 @@ class DefaultExecutionService(
             ).map {
                 ExecutionDataDto(correlationId, it.id, it.language, "1.1", it.content)
             }
+        rules.map {
+            println("rules: ${it.name} ${it.value} ${it.id} ${it.name}")
+        }
+        snippets.map {
+            println(it.input)
+        }
         apiCalls.changeFormatRules(userId, rules, snippets, correlationId)
     }
 
