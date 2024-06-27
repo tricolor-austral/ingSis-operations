@@ -228,11 +228,12 @@ class DefaultApiCalls(
         snippet: String,
         input: String,
         output: List<String>,
+        envVars: String,
     ): String {
         return runnerApi
             .post()
             .uri("/test")
-            .bodyValue(mapOf("snippet" to snippet, "input" to input, "output" to output))
+            .bodyValue(mapOf("snippet" to snippet, "input" to input, "output" to output, "enVars" to envVars))
             .retrieve()
             .bodyToMono(String::class.java)
             .block() ?: throw HttpException("Could not run test", HttpStatus.EXPECTATION_FAILED)

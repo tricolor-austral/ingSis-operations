@@ -79,5 +79,6 @@ interface APICalls {
         snippet: String,
         input: String,
         output: List<String>,
+        envVars: String,
     ): String
 }

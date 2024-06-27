@@ -27,16 +27,19 @@ class TestCaseServiceImpl
             return testCasedtos.map { TestCaseReturnDto.from(it) }
         }
 
-        override fun runTestCase(testCaseId: Long): String {
+        override fun runTestCase(
+            testCaseId: Long,
+            envVars: String,
+        ): String {
             println("1$testCaseId")
-            var testCase: TestCase = this.testCaseRepository.findById(testCaseId).get()
+            val testCase: TestCase = this.testCaseRepository.findById(testCaseId).get()
             println("2,$testCase")
-            var snippetId: Long = testCase.snippetId
+            val snippetId: Long = testCase.snippetId
             println("3,$snippetId")
-            var snippetContent: String = apiCalls.getSnippet(snippetId.toString())
+            val snippetContent: String = apiCalls.getSnippet(snippetId.toString())
             print(snippetContent)
             print(testCase.input)
             print(testCase.output)
-            return apiCalls.runTest(snippetContent, testCase.input.toString(), testCase.output)
+            return apiCalls.runTest(snippetContent, testCase.input.toString(), testCase.output, envVars)
         }
     }

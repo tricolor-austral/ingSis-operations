@@ -44,8 +44,9 @@ class TestCaseController(
     @PostMapping("/run")
     fun runTestCase(
         @RequestParam testCaseId: Long,
+        @RequestParam envVars: String,
     ): String {
         println("1$testCaseId")
-        return testCaseService.runTestCase(testCaseId)
+        return testCaseService.runTestCase(testCaseId, envVars)
     }
 }
