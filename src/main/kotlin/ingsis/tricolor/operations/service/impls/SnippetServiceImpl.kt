@@ -83,6 +83,7 @@ class SnippetServiceImpl
         ): GetSnippetDto {
             val snippet = checkSnippetExists(updateSnippetDto.id.toLong())
             checkUserCanModify(userId, updateSnippetDto.id)
+            apiCalls.deleteSnippet(updateSnippetDto.id)
             saveSnippetOnAssetService(updateSnippetDto.id, updateSnippetDto.content, correlationId)
             return GetSnippetDto.from(snippet, updateSnippetDto.content)
         }
