@@ -28,7 +28,9 @@ class TestCaseServiceImpl
 
         override fun runTestCase(testCaseId: Long): String {
             var testCase: TestCase = this.testCaseRepository.findById(testCaseId).get()
+            println("2,"+testCase)
             var snippetId: Long = testCase.snippetId
+            println("3,"+snippetId)
             var snippetContent: String = apiCalls.getSnippet(snippetId.toString())
             print(snippetContent)
             print(testCase.input)

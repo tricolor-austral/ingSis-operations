@@ -29,7 +29,7 @@ class TestCase {
 
     @ElementCollection
     @CollectionTable(name = "test_case_outputs", joinColumns = [JoinColumn(name = "test_case_id")])
-    @Column(name = "input")
+    @Column(name = "output")
     var output: List<String> = mutableListOf()
 
     @Column
