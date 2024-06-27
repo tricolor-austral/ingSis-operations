@@ -232,12 +232,12 @@ class DefaultApiCalls(
     override fun runTest(
         snippet: String,
         input: String,
-        expectedOutput: List<String>,
+        output: List<String>,
     ): String {
         return runnerApi
             .post()
-            .uri("/run")
-            .bodyValue(mapOf("content" to snippet, "input" to input, "expectedOutput" to expectedOutput))
+            .uri("/test")
+            .bodyValue(mapOf("content" to snippet, "input" to input, "output" to output))
             .retrieve()
             .bodyToMono(String::class.java)
             .block() ?: throw HttpException("Could not run test", HttpStatus.EXPECTATION_FAILED)
