@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.server.ServerWebExchange
+import java.util.UUID
 
 @RestController
 @RequestMapping("/snippets")
@@ -31,16 +31,13 @@ class SnippetController(
     @Autowired val snippetService: SnippetService,
 ) {
     @ExceptionHandler(HttpException::class)
-    fun handleException(exception: HttpException): ResponseEntity<String> {
-        return ResponseEntity(exception.message, exception.status)
-    }
+    fun handleException(exception: HttpException): ResponseEntity<String> = ResponseEntity(exception.message, exception.status)
 
     @PostMapping()
     fun createSnippet(
         @RequestBody snippetDto: SnippetCreateDto,
-        exchange: ServerWebExchange,
     ): Snippet {
-        val correlationId = exchange.getAttribute<String>(CorrelationIdFilter.CORRELATION_ID_KEY) ?: "default-correlation-id"
+        val correlationId = UUID.randomUUID().toString()
         return snippetService.createSnippet(snippetDto, correlationId)
     }
 
@@ -58,17 +55,14 @@ class SnippetController(
     fun getSnippetById(
         @RequestParam userId: String,
         @RequestParam snippetId: String,
-    ): GetSnippetDto {
-        return snippetService.getSnippetById(userId, snippetId.toLong())
-    }
+    ): GetSnippetDto = snippetService.getSnippetById(userId, snippetId.toLong())
 
     @PutMapping()
     fun updateSnippet(
         @RequestParam userId: String,
         @RequestBody updateSnippetDto: UpdateSnippetDto,
-        exchange: ServerWebExchange,
     ): GetSnippetDto {
-        val correlationId = exchange.getAttribute<String>(CorrelationIdFilter.CORRELATION_ID_KEY) ?: "default-correlation-id"
+        val correlationId = UUID.randomUUID().toString()
         return snippetService.updateSnippet(userId, updateSnippetDto, correlationId)
     }
 
@@ -85,15 +79,11 @@ class SnippetController(
     fun shareSnippet(
         @RequestParam userId: String,
         @RequestBody snippetFriend: ShareSnippetDto,
-    ): UserResourcePermission {
-        return snippetService.shareSnippet(userId, snippetFriend.friendId, snippetFriend.snippetId.toLong())
-    }
+    ): UserResourcePermission = snippetService.shareSnippet(userId, snippetFriend.friendId, snippetFriend.snippetId.toLong())
 
     @GetMapping("users")
     fun getUsers(
         @RequestParam pageNumber: Int,
         @RequestParam pageSize: Int,
-    ): Page<String> {
-        return snippetService.getUsers(pageNumber, pageSize)
-    }
+    ): Page<String> = snippetService.getUsers(pageNumber, pageSize)
 }

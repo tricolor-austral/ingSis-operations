@@ -2,6 +2,7 @@ package ingsis.tricolor.operations.controller
 
 import ingsis.tricolor.operations.dto.SnippetContext
 import ingsis.tricolor.operations.dto.UpdateSnippetDto
+import ingsis.tricolor.operations.dto.execution.ObjectRules
 import ingsis.tricolor.operations.dto.execution.Rule
 import ingsis.tricolor.operations.service.ExecutionService
 import ingsis.tricolor.operations.service.SnippetService
@@ -34,33 +35,30 @@ class ExecutionController(
     @GetMapping("/format-rules")
     fun getFormatRules(
         @RequestParam userId: String,
-    ): List<Rule> {
-        return execService.getFormatRules(userId, UUID.randomUUID())
-    }
+    ): List<Rule> = execService.getFormatRules(userId, UUID.randomUUID())
 
     @GetMapping("/lint-rules")
     fun getLintRules(
         @RequestParam userId: String,
-    ): List<Rule> {
-        return execService.getLintRules(userId, UUID.randomUUID())
-    }
+    ): List<Rule> = execService.getLintRules(userId, UUID.randomUUID())
 
     @PutMapping("/format-rules")
     fun changeFormatRules(
         @RequestParam userId: String,
-        @RequestBody rules: List<Rule>,
+        @RequestBody rules: ObjectRules,
     ): List<Rule> {
-        execService.changeFormatRules(userId, rules, UUID.randomUUID())
-        return rules
+        println("Changing format rules")
+        execService.changeFormatRules(userId, rules.rules, UUID.randomUUID())
+        return rules.rules
     }
 
     @PutMapping("/lint-rules")
     fun changeLinRules(
         @RequestParam userId: String,
-        @RequestBody rules: List<Rule>,
+        @RequestBody rules: ObjectRules,
     ): List<Rule> {
-        execService.changeFormatRules(userId, rules, UUID.randomUUID())
-        return rules
+        execService.changeFormatRules(userId, rules.rules, UUID.randomUUID())
+        return rules.rules
     }
 
     @PutMapping("/update-snippet")
@@ -69,6 +67,6 @@ class ExecutionController(
         exchange: ServerWebExchange,
     ) {
         val correlationId = exchange.getAttribute<String>(CorrelationIdFilter.CORRELATION_ID_KEY) ?: "default-correlation-id"
-        snippetService.updateFormattedLintedSnippet(snippet.id, snippet.content, correlationId)
+        snippetService.updateFormattedLintedSnippet(snippet.id.toLong(), snippet.content, correlationId)
     }
 }
