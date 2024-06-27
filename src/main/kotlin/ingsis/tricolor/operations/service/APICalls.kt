@@ -73,4 +73,10 @@ interface APICalls {
         snippets: List<ExecutionDataDto>,
         correlationId: UUID,
     )
+
+    fun runTest(
+        snippet: String,
+        input: String,
+        expectedOutput: List<String>,
+    ): String
 }

@@ -1,13 +1,13 @@
 package ingsis.tricolor.operations.entity
 
 import ingsis.tricolor.operations.dto.testCase.TestCaseCreateDto
+import jakarta.persistence.CollectionTable
+import jakarta.persistence.Column
+import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.Column
-import jakarta.persistence.ElementCollection
-import jakarta.persistence.CollectionTable
 import jakarta.persistence.JoinColumn
 import org.jetbrains.annotations.NotNull
 
@@ -24,15 +24,13 @@ class TestCase {
     @Column
     var name: String = ""
 
-    @ElementCollection
-    @CollectionTable(name = "test_case_inputs", joinColumns = [JoinColumn(name = "test_case_id")])
     @Column(name = "input")
-    var input: List<String> = mutableListOf()
+    var input: String = ""
 
     @ElementCollection
     @CollectionTable(name = "test_case_outputs", joinColumns = [JoinColumn(name = "test_case_id")])
     @Column(name = "input")
-    var expectedOutput: List<String> = mutableListOf()
+    var output: List<String> = mutableListOf()
 
     @Column
     var envVars: String = ""
@@ -40,8 +38,8 @@ class TestCase {
     companion object {
         fun from(testCaseDto: TestCaseCreateDto): TestCase {
             val testCase = TestCase()
-            testCase.input = testCaseDto.input
-            testCase.expectedOutput = testCaseDto.output
+            testCase.input = testCaseDto.input[0]
+            testCase.output = testCaseDto.output
             testCase.name = testCaseDto.name
             testCase.snippetId = testCaseDto.id
             testCase.envVars = testCaseDto.envVars
