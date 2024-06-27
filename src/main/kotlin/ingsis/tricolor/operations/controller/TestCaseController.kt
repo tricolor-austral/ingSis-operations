@@ -34,14 +34,16 @@ class TestCaseController(
     }
 
     @GetMapping
-    fun getTestCases(): MutableIterable<TestCase> {
-        return testCaseService.getTestCase()
+    fun getTestCases(
+        @RequestParam testCaseId: Long,
+    ): MutableIterable<TestCase> {
+        return testCaseService.getTestCase(testCaseId)
     }
 
     @PostMapping("/run")
     fun runTestCase(
-        @RequestParam testCaseId: Long,
+        @RequestParam snippetId: Long,
     ): String {
-        return testCaseService.runTestCase(testCaseId)
+        return testCaseService.runTestCase(snippetId)
     }
 }

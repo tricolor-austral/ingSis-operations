@@ -30,7 +30,7 @@ class TestCase {
     @ElementCollection
     @CollectionTable(name = "test_case_outputs", joinColumns = [JoinColumn(name = "test_case_id")])
     @Column(name = "input")
-    var expectedOutput: List<String> = mutableListOf()
+    var output: List<String> = mutableListOf()
 
     @Column
     var envVars: String = ""
@@ -38,8 +38,8 @@ class TestCase {
     companion object {
         fun from(testCaseDto: TestCaseCreateDto): TestCase {
             val testCase = TestCase()
-            testCase.input = testCaseDto.input.get(0)
-            testCase.expectedOutput = testCaseDto.output
+            testCase.input = testCaseDto.input[0]
+            testCase.output = testCaseDto.output
             testCase.name = testCaseDto.name
             testCase.snippetId = testCaseDto.id
             testCase.envVars = testCaseDto.envVars
