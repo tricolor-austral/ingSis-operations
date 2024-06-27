@@ -204,11 +204,18 @@ class DefaultApiCalls(
         snippets: List<ExecutionDataDto>,
         correlationId: UUID,
     ) {
-        val data = ChangeRulesDto(userId, rules, snippets, correlationId)
-        runnerApi
-            .put()
-            .uri("/redis/format")
-            .bodyValue(data)
+        try {
+            val data = ChangeRulesDto(userId, rules, snippets, correlationId)
+            runnerApi
+                .put()
+                .uri("/redis/format")
+                .bodyValue(data)
+                .retrieve()
+                .bodyToMono(Unit::class.java)
+                .block()
+        } catch (e: Error) {
+            println(e.message)
+        }
     }
 
     override fun changeLintRules(
@@ -217,11 +224,18 @@ class DefaultApiCalls(
         snippets: List<ExecutionDataDto>,
         correlationId: UUID,
     ) {
-        val data = ChangeRulesDto(userId, rules, snippets, correlationId)
-        runnerApi
-            .put()
-            .uri("/redis/lint")
-            .bodyValue(data)
+        try {
+            val data = ChangeRulesDto(userId, rules, snippets, correlationId)
+            runnerApi
+                .put()
+                .uri("/redis/lint")
+                .bodyValue(data)
+                .retrieve()
+                .bodyToMono(Unit::class.java)
+                .block()
+        } catch (e: Error) {
+            println(e.message)
+        }
     }
 
     override fun runTest(
@@ -229,13 +243,12 @@ class DefaultApiCalls(
         input: String,
         output: List<String>,
         envVars: String,
-    ): String {
-        return runnerApi
+    ): String =
+        runnerApi
             .post()
             .uri("/test")
             .bodyValue(mapOf("snippet" to snippet, "input" to input, "output" to output, "enVars" to envVars))
             .retrieve()
             .bodyToMono(String::class.java)
             .block() ?: throw HttpException("Could not run test", HttpStatus.EXPECTATION_FAILED)
-    }
 }

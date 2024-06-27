@@ -68,6 +68,6 @@ class ExecutionController(
         exchange: ServerWebExchange,
     ) {
         val correlationId = exchange.getAttribute<String>(CorrelationIdFilter.CORRELATION_ID_KEY) ?: "default-correlation-id"
-        snippetService.updateFormattedLintedSnippet(snippet.id, snippet.content, correlationId)
+        snippetService.updateFormattedLintedSnippet(snippet.id.toLong(), snippet.content, correlationId)
     }
 }
