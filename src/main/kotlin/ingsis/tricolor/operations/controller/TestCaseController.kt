@@ -1,6 +1,7 @@
 package ingsis.tricolor.operations.controller
 
 import ingsis.tricolor.operations.dto.testCase.TestCaseCreateDto
+import ingsis.tricolor.operations.dto.testCase.TestCaseReturnDto
 import ingsis.tricolor.operations.entity.TestCase
 import ingsis.tricolor.operations.service.TestCaseService
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,7 +37,7 @@ class TestCaseController(
     @GetMapping
     fun getTestCases(
         @RequestParam snippetId: Long,
-    ): MutableIterable<TestCase> {
+    ): List<TestCaseReturnDto> {
         return testCaseService.getTestCase(snippetId)
     }
 

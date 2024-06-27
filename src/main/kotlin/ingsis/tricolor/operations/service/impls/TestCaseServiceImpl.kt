@@ -1,12 +1,12 @@
 package ingsis.tricolor.operations.service.impls
 
 import ingsis.tricolor.operations.dto.testCase.TestCaseCreateDto
+import ingsis.tricolor.operations.dto.testCase.TestCaseReturnDto
 import ingsis.tricolor.operations.entity.TestCase
 import ingsis.tricolor.operations.repository.TestCaseRepository
 import ingsis.tricolor.operations.service.TestCaseService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import kotlin.math.log
 
 @Service
 class TestCaseServiceImpl
@@ -22,15 +22,16 @@ class TestCaseServiceImpl
             this.testCaseRepository.deleteById(testId)
         }
 
-        override fun getTestCase(snippetId: Long): MutableIterable<TestCase> {
-            return this.testCaseRepository.findBySnippetId(snippetId)
+        override fun getTestCase(snippetId: Long): List<TestCaseReturnDto> {
+            var testCasedtos: MutableList<TestCase> = this.testCaseRepository.findBySnippetId(snippetId)
+            return testCasedtos.map { TestCaseReturnDto.from(it) }
         }
 
         override fun runTestCase(testCaseId: Long): String {
             var testCase: TestCase = this.testCaseRepository.findById(testCaseId).get()
-            println("2,"+testCase)
+            println("2," + testCase)
             var snippetId: Long = testCase.snippetId
-            println("3,"+snippetId)
+            println("3," + snippetId)
             var snippetContent: String = apiCalls.getSnippet(snippetId.toString())
             print(snippetContent)
             print(testCase.input)
