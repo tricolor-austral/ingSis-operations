@@ -6,6 +6,7 @@ import ingsis.tricolor.operations.repository.TestCaseRepository
 import ingsis.tricolor.operations.service.TestCaseService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import kotlin.math.log
 
 @Service
 class TestCaseServiceImpl
@@ -29,6 +30,9 @@ class TestCaseServiceImpl
             var testCase: TestCase = this.testCaseRepository.findById(testCaseId).get()
             var snippetId: Long = testCase.snippetId
             var snippetContent: String = apiCalls.getSnippet(snippetId.toString())
+            print(snippetContent)
+            print(testCase.input)
+            print(testCase.output)
             return apiCalls.runTest(snippetContent, testCase.input, testCase.output)
         }
     }
