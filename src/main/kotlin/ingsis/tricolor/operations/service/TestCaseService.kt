@@ -8,5 +8,5 @@ interface TestCaseService {
 
     fun deleteTestCase(testId: Long)
 
-    fun getTestCase(snippetId: Long): List<TestCase>
+    fun getTestCase(): MutableIterable<TestCase>
 }

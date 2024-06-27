@@ -35,8 +35,7 @@ class TestCaseController(
 
     @GetMapping
     fun getTestCases(
-        @RequestParam snippetId: Long,
-    ): List<TestCase> {
-        return testCaseService.getTestCase(snippetId)
+    ): MutableIterable<TestCase> {
+        return testCaseService.getTestCase()
     }
 }

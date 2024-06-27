@@ -21,7 +21,7 @@ class TestCaseServiceImpl
             this.testCaseRepository.deleteById(testId)
         }
 
-        override fun getTestCase(snippetId: Long): List<TestCase> {
-            return this.testCaseRepository.getAllBySnippetId(snippetId)
+        override fun getTestCase(): MutableIterable<TestCase> {
+            return this.testCaseRepository.findAll()
         }
     }
