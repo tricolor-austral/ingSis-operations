@@ -195,7 +195,7 @@ class DefaultApiCalls(
             .header("Correlation-id", correlationId.toString())
             .retrieve()
             .bodyToMono(object : ParameterizedTypeReference<List<Rule>>() {})
-            .block() ?: throw HttpException("Could not ger rules", HttpStatus.EXPECTATION_FAILED)
+            .block() ?: throw HttpException("Could not get rules", HttpStatus.EXPECTATION_FAILED)
 
     override fun changeFormatRules(
         userId: String,
@@ -208,9 +208,6 @@ class DefaultApiCalls(
             .put()
             .uri("/redis/format")
             .bodyValue(data)
-            .retrieve()
-            .bodyToMono(Unit::class.java)
-            .block() ?: throw HttpException("Error formatting rules", HttpStatus.EXPECTATION_FAILED)
     }
 
     override fun changeLintRules(
@@ -224,9 +221,6 @@ class DefaultApiCalls(
             .put()
             .uri("/redis/lint")
             .bodyValue(data)
-            .retrieve()
-            .bodyToMono(Unit::class.java)
-            .block() ?: throw HttpException("Error linting rules", HttpStatus.EXPECTATION_FAILED)
     }
 
     override fun runTest(
