@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ServerWebExchange
 import java.util.UUID
 
-@CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 @RestController
 @RequestMapping("/run")
 class ExecutionController(

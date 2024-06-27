@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ServerWebExchange
 
-@CrossOrigin(origins = ["*"], allowedHeaders = ["*"])
 @RestController
 @RequestMapping("/snippets")
 class SnippetController(
