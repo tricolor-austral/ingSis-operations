@@ -36,6 +36,6 @@ class TestCaseServiceImpl
             print(snippetContent)
             print(testCase.input)
             print(testCase.output)
-            return apiCalls.runTest(snippetContent, testCase.input, testCase.output)
+            return apiCalls.runTest(snippetContent, testCase.input.toString(), testCase.output)
         }
     }

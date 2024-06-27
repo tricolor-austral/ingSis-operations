@@ -1,8 +1,8 @@
 package ingsis.tricolor.operations.dto.execution
 
-import java.util.*
+import java.util.UUID
 
-data class FormatFileDto (
+data class FormatFileDto(
     val correlationId: UUID,
     val snippetId: String,
     val language: String,

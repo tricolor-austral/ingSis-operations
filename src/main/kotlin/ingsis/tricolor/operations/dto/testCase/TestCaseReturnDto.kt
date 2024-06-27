@@ -5,7 +5,7 @@ import ingsis.tricolor.operations.entity.TestCase
 class TestCaseReturnDto {
     var id: String = ""
     var name: String = ""
-    var input: String = ""
+    var input: List<String> = mutableListOf()
     var output: List<String> = mutableListOf()
     var envVars: String = ""
 

@@ -7,5 +7,5 @@ data class ExecutionDataDto(
     val snippetId: String,
     val language: String,
     val version: String,
-    val input: String
+    val input: String,
 )

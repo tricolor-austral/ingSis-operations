@@ -1,6 +1,10 @@
 package ingsis.tricolor.operations.service.impls
 
-import ingsis.tricolor.operations.dto.execution.*
+import ingsis.tricolor.operations.dto.execution.ChangeRulesDto
+import ingsis.tricolor.operations.dto.execution.ExecutionDataDto
+import ingsis.tricolor.operations.dto.execution.ExecutionResponseDto
+import ingsis.tricolor.operations.dto.execution.FormatFileDto
+import ingsis.tricolor.operations.dto.execution.Rule
 import ingsis.tricolor.operations.dto.permissions.PermissionCreateResponse
 import ingsis.tricolor.operations.dto.permissions.ResourcePermissionCreateDto
 import ingsis.tricolor.operations.dto.permissions.ShareResource
