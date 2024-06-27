@@ -1,6 +1,7 @@
 package ingsis.tricolor.operations.controller
 
 import ingsis.tricolor.operations.dto.testCase.TestCaseCreateDto
+import ingsis.tricolor.operations.dto.testCase.TestCaseReturnDto
 import ingsis.tricolor.operations.entity.TestCase
 import ingsis.tricolor.operations.service.TestCaseService
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,15 +36,16 @@ class TestCaseController(
 
     @GetMapping
     fun getTestCases(
-        @RequestParam testCaseId: Long,
-    ): MutableIterable<TestCase> {
-        return testCaseService.getTestCase(testCaseId)
+        @RequestParam snippetId: Long,
+    ): List<TestCaseReturnDto> {
+        return testCaseService.getTestCase(snippetId)
     }
 
     @PostMapping("/run")
     fun runTestCase(
-        @RequestParam snippetId: Long,
+        @RequestParam testCaseId: Long,
     ): String {
-        return testCaseService.runTestCase(snippetId)
+        println("1$testCaseId")
+        return testCaseService.runTestCase(testCaseId)
     }
 }

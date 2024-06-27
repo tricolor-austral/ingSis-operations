@@ -3,6 +3,7 @@ package ingsis.tricolor.operations.service.impls
 import ingsis.tricolor.operations.dto.execution.ChangeRulesDto
 import ingsis.tricolor.operations.dto.execution.ExecutionDataDto
 import ingsis.tricolor.operations.dto.execution.ExecutionResponseDto
+import ingsis.tricolor.operations.dto.execution.FormatFileDto
 import ingsis.tricolor.operations.dto.execution.Rule
 import ingsis.tricolor.operations.dto.permissions.PermissionCreateResponse
 import ingsis.tricolor.operations.dto.permissions.ResourcePermissionCreateDto
@@ -27,7 +28,6 @@ class DefaultApiCalls(
     @Value("\${permission.url}") permissionUrl: String,
     @Value("\${asset.url}") assetUrl: String,
     @Value("\${runner.url}") runnerUrl: String,
-    private val sslBundleRegistry: DefaultSslBundleRegistry,
 ) : APICalls {
     private val permissionApi = WebClient.builder().baseUrl("http://$permissionUrl").build()
     private val assetServiceApi = WebClient.builder().baseUrl("http://$assetUrl/v1/asset").build()
@@ -166,7 +166,7 @@ class DefaultApiCalls(
         return true
     }
 
-    override fun formatSnippet(data: ExecutionDataDto): ExecutionResponseDto =
+    override fun formatSnippet(data: FormatFileDto): ExecutionResponseDto =
         runnerApi
             .post()
             .uri("/format")
@@ -242,13 +242,14 @@ class DefaultApiCalls(
     override fun runTest(
         snippet: String,
         input: String,
-        expectedOutput: List<String>,
-    ): String =
-        runnerApi
+        output: List<String>,
+    ): String {
+        return runnerApi
             .post()
-            .uri("/run")
-            .bodyValue(mapOf("content" to snippet, "input" to input, "expectedOutput" to expectedOutput))
+            .uri("/test")
+            .bodyValue(mapOf("snippet" to snippet, "input" to input, "output" to output))
             .retrieve()
             .bodyToMono(String::class.java)
             .block() ?: throw HttpException("Could not run test", HttpStatus.EXPECTATION_FAILED)
+    }
 }
