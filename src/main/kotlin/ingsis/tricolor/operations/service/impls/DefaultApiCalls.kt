@@ -13,6 +13,7 @@ import ingsis.tricolor.operations.error.NotFoundException
 import ingsis.tricolor.operations.error.UnauthorizedException
 import ingsis.tricolor.operations.service.APICalls
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.ssl.DefaultSslBundleRegistry
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -26,6 +27,7 @@ class DefaultApiCalls(
     @Value("\${permission.url}") permissionUrl: String,
     @Value("\${asset.url}") assetUrl: String,
     @Value("\${runner.url}") runnerUrl: String,
+    private val sslBundleRegistry: DefaultSslBundleRegistry,
 ) : APICalls {
     private val permissionApi = WebClient.builder().baseUrl("http://$permissionUrl").build()
     private val assetServiceApi = WebClient.builder().baseUrl("http://$assetUrl/v1/asset").build()
@@ -203,11 +205,18 @@ class DefaultApiCalls(
         snippets: List<ExecutionDataDto>,
         correlationId: UUID,
     ) {
-        val data = ChangeRulesDto(userId, rules, snippets, correlationId)
-        runnerApi
-            .put()
-            .uri("/redis/format")
-            .bodyValue(data)
+        try {
+            val data = ChangeRulesDto(userId, rules, snippets, correlationId)
+            runnerApi
+                .put()
+                .uri("/redis/format")
+                .bodyValue(data)
+                .retrieve()
+                .bodyToMono(Unit::class.java)
+                .block()
+        } catch (e: Error) {
+            println(e.message)
+        }
     }
 
     override fun changeLintRules(
@@ -216,24 +225,30 @@ class DefaultApiCalls(
         snippets: List<ExecutionDataDto>,
         correlationId: UUID,
     ) {
-        val data = ChangeRulesDto(userId, rules, snippets, correlationId)
-        runnerApi
-            .put()
-            .uri("/redis/lint")
-            .bodyValue(data)
+        try {
+            val data = ChangeRulesDto(userId, rules, snippets, correlationId)
+            runnerApi
+                .put()
+                .uri("/redis/lint")
+                .bodyValue(data)
+                .retrieve()
+                .bodyToMono(Unit::class.java)
+                .block()
+        } catch (e: Error) {
+            println(e.message)
+        }
     }
 
     override fun runTest(
         snippet: String,
         input: String,
         expectedOutput: List<String>,
-    ): String {
-        return runnerApi
+    ): String =
+        runnerApi
             .post()
             .uri("/run")
             .bodyValue(mapOf("content" to snippet, "input" to input, "expectedOutput" to expectedOutput))
             .retrieve()
             .bodyToMono(String::class.java)
             .block() ?: throw HttpException("Could not run test", HttpStatus.EXPECTATION_FAILED)
-    }
 }
