@@ -9,4 +9,6 @@ interface TestCaseService {
     fun deleteTestCase(testId: Long)
 
     fun getTestCase(): MutableIterable<TestCase>
+
+    fun runTestCase(testCaseId: Long): String
 }
