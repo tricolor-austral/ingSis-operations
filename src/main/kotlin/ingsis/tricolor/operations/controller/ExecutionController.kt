@@ -51,6 +51,7 @@ class ExecutionController(
         @RequestParam userId: String,
         @RequestBody rules: List<Rule>,
     ): List<Rule> {
+        println("Changing format rules")
         execService.changeFormatRules(userId, rules, UUID.randomUUID())
         return rules
     }
