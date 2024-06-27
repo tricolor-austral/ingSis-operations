@@ -2,6 +2,7 @@ package ingsis.tricolor.operations.service
 
 import ingsis.tricolor.operations.dto.execution.ExecutionDataDto
 import ingsis.tricolor.operations.dto.execution.ExecutionResponseDto
+import ingsis.tricolor.operations.dto.execution.FormatFileDto
 import ingsis.tricolor.operations.dto.execution.Rule
 import ingsis.tricolor.operations.dto.permissions.PermissionCreateResponse
 import ingsis.tricolor.operations.dto.permissions.ResourcePermissionCreateDto
@@ -48,7 +49,7 @@ interface APICalls {
 
     // Runner API:
 
-    fun formatSnippet(data: ExecutionDataDto): ExecutionResponseDto
+    fun formatSnippet(data: FormatFileDto): ExecutionResponseDto
 
     fun getFormatRules(
         userId: String,

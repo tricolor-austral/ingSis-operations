@@ -1,6 +1,7 @@
 package ingsis.tricolor.operations.service.impls
 
 import ingsis.tricolor.operations.dto.execution.ExecutionDataDto
+import ingsis.tricolor.operations.dto.execution.FormatFileDto
 import ingsis.tricolor.operations.dto.execution.Rule
 import ingsis.tricolor.operations.error.UnauthorizedException
 import ingsis.tricolor.operations.service.APICalls
@@ -24,7 +25,7 @@ class DefaultExecutionService(
         val permissions = apiCalls.userCanWrite(userId, snippetId)
         if (!permissions.permissions.contains("WRITE")) throw UnauthorizedException("User cannot format this snippet")
         val content = apiCalls.getSnippet(snippetId)
-        val data = ExecutionDataDto(correlationId, snippetId, language, "1.1", content)
+        val data = FormatFileDto(correlationId, snippetId, language, "1.1", content, userId)
         val response = apiCalls.formatSnippet(data)
         return response.snippet
     }
