@@ -38,7 +38,7 @@ class SnippetController(
     fun createSnippet(
         @RequestBody snippetDto: SnippetCreateDto,
     ): Snippet {
-        val correlationId =  UUID.randomUUID().toString()
+        val correlationId = UUID.randomUUID().toString()
         return snippetService.createSnippet(snippetDto, correlationId)
     }
 
