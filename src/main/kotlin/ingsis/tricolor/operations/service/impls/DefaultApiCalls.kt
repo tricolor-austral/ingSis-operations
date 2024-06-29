@@ -251,11 +251,10 @@ class DefaultApiCalls(
             .retrieve()
             .bodyToMono(String::class.java)
             .block() ?: throw HttpException("Could not run test", HttpStatus.EXPECTATION_FAILED)
-    }
     override fun lintSnippet(
         formatFileDto: FormatFileDto
-    ): String {
-        return runnerApi
+    ): String =
+        runnerApi
             .post()
             .uri("/lint")
             .bodyValue(formatFileDto)
@@ -264,4 +263,4 @@ class DefaultApiCalls(
             .block() ?: throw HttpException("Could not lint correctly", HttpStatus.EXPECTATION_FAILED)
 
     }
-}
+
