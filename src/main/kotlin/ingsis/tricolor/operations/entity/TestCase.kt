@@ -24,8 +24,9 @@ class TestCase {
     @Column
     var name: String = ""
 
+    @ElementCollection
     @Column(name = "input")
-    var input: String = ""
+    var input: List<String> = mutableListOf()
 
     @ElementCollection
     @CollectionTable(name = "test_case_outputs", joinColumns = [JoinColumn(name = "test_case_id")])
@@ -38,7 +39,7 @@ class TestCase {
     companion object {
         fun from(testCaseDto: TestCaseCreateDto): TestCase {
             val testCase = TestCase()
-            testCase.input = testCaseDto.input[0]
+            testCase.input = listOf(testCaseDto.input[0])
             testCase.output = testCaseDto.output
             testCase.name = testCaseDto.name
             testCase.snippetId = testCaseDto.id

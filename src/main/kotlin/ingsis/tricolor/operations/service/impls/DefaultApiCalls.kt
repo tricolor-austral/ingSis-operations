@@ -1,6 +1,10 @@
 package ingsis.tricolor.operations.service.impls
 
-import ingsis.tricolor.operations.dto.execution.*
+import ingsis.tricolor.operations.dto.execution.ChangeRulesDto
+import ingsis.tricolor.operations.dto.execution.ExecutionDataDto
+import ingsis.tricolor.operations.dto.execution.ExecutionResponseDto
+import ingsis.tricolor.operations.dto.execution.FormatFileDto
+import ingsis.tricolor.operations.dto.execution.Rule
 import ingsis.tricolor.operations.dto.permissions.PermissionCreateResponse
 import ingsis.tricolor.operations.dto.permissions.ResourcePermissionCreateDto
 import ingsis.tricolor.operations.dto.permissions.ShareResource
@@ -200,11 +204,18 @@ class DefaultApiCalls(
         snippets: List<ExecutionDataDto>,
         correlationId: UUID,
     ) {
-        val data = ChangeRulesDto(userId, rules, snippets, correlationId)
-        runnerApi
-            .put()
-            .uri("/redis/format")
-            .bodyValue(data)
+        try {
+            val data = ChangeRulesDto(userId, rules, snippets, correlationId)
+            runnerApi
+                .put()
+                .uri("/redis/format")
+                .bodyValue(data)
+                .retrieve()
+                .bodyToMono(Unit::class.java)
+                .block()
+        } catch (e: Error) {
+            println(e.message)
+        }
     }
 
     override fun changeLintRules(
@@ -213,22 +224,30 @@ class DefaultApiCalls(
         snippets: List<ExecutionDataDto>,
         correlationId: UUID,
     ) {
-        val data = ChangeRulesDto(userId, rules, snippets, correlationId)
-        runnerApi
-            .put()
-            .uri("/redis/lint")
-            .bodyValue(data)
+        try {
+            val data = ChangeRulesDto(userId, rules, snippets, correlationId)
+            runnerApi
+                .put()
+                .uri("/redis/lint")
+                .bodyValue(data)
+                .retrieve()
+                .bodyToMono(Unit::class.java)
+                .block()
+        } catch (e: Error) {
+            println(e.message)
+        }
     }
 
     override fun runTest(
         snippet: String,
         input: String,
         output: List<String>,
-    ): String {
-        return runnerApi
+        envVars: String,
+    ): String =
+        runnerApi
             .post()
             .uri("/test")
-            .bodyValue(mapOf("content" to snippet, "input" to input, "output" to output))
+            .bodyValue(mapOf("snippet" to snippet, "input" to input, "output" to output, "envVars" to envVars))
             .retrieve()
             .bodyToMono(String::class.java)
             .block() ?: throw HttpException("Could not run test", HttpStatus.EXPECTATION_FAILED)

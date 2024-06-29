@@ -1,6 +1,6 @@
 package ingsis.tricolor.operations.dto
 
 class UpdateSnippetDto(
-    val id: Long,
+    val id: String,
     val content: String,
 )

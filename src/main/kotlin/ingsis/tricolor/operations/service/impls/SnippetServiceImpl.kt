@@ -91,9 +91,10 @@ class SnippetServiceImpl
             updateSnippetDto: UpdateSnippetDto,
             correlationId: String,
         ): GetSnippetDto {
-            val snippet = checkSnippetExists(updateSnippetDto.id)
-            checkUserCanModify(userId, updateSnippetDto.id.toString())
-            saveSnippetOnAssetService(updateSnippetDto.id.toString(), updateSnippetDto.content, correlationId)
+            val snippet = checkSnippetExists(updateSnippetDto.id.toLong())
+            checkUserCanModify(userId, updateSnippetDto.id)
+            apiCalls.deleteSnippet(updateSnippetDto.id)
+            saveSnippetOnAssetService(updateSnippetDto.id, updateSnippetDto.content, correlationId)
             return GetSnippetDto.from(snippet, updateSnippetDto.content)
         }
 
@@ -114,17 +115,13 @@ class SnippetServiceImpl
             snippetRepositoryCrud.delete(snippet)
         }
 
-        override fun getSnippet(id: String): String {
-            return apiCalls.getSnippet(id)
-        }
+        override fun getSnippet(id: String): String = apiCalls.getSnippet(id)
 
         override fun shareSnippet(
             authorId: String,
             friendId: String,
             snippetId: Long,
-        ): UserResourcePermission {
-            return apiCalls.shareResource(authorId, snippetId.toString(), friendId)
-        }
+        ): UserResourcePermission = apiCalls.shareResource(authorId, snippetId.toString(), friendId)
 
         override fun getUsers(
             pageNumber: Int,
@@ -190,7 +187,5 @@ class SnippetServiceImpl
             }
         }
 
-        private fun checkSnippetExists(id: Long): Snippet {
-            return snippetRepositoryCrud.findById(id).orElseThrow { throw NotFoundException() }
-        }
+        private fun checkSnippetExists(id: Long): Snippet = snippetRepositoryCrud.findById(id).orElseThrow { throw NotFoundException() }
     }

@@ -11,5 +11,8 @@ interface TestCaseService {
 
     fun getTestCase(snippetId: Long): List<TestCaseReturnDto>
 
-    fun runTestCase(testCaseId: Long): String
+    fun runTestCase(
+        testCaseId: Long,
+        envVars: String,
+    ): String
 }

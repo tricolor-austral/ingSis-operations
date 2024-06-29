@@ -78,7 +78,8 @@ interface APICalls {
     fun runTest(
         snippet: String,
         input: String,
-        expectedOutput: List<String>,
+        output: List<String>,
+        envVars: String,
     ): String
     fun lintSnippet (
         formatFileDto: FormatFileDto
