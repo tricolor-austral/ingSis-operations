@@ -80,4 +80,7 @@ interface APICalls {
         input: String,
         expectedOutput: List<String>,
     ): String
+    fun lintSnippet (
+        formatFileDto: FormatFileDto
+    ): String
 }

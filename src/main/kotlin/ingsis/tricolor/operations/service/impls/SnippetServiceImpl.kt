@@ -3,6 +3,7 @@ package ingsis.tricolor.operations.service.impls
 import ingsis.tricolor.operations.dto.GetSnippetDto
 import ingsis.tricolor.operations.dto.SnippetCreateDto
 import ingsis.tricolor.operations.dto.UpdateSnippetDto
+import ingsis.tricolor.operations.dto.execution.FormatFileDto
 import ingsis.tricolor.operations.dto.permissions.ResourcePermissionCreateDto
 import ingsis.tricolor.operations.dto.permissions.UserResourcePermission
 import ingsis.tricolor.operations.entity.Snippet
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class SnippetServiceImpl
@@ -51,7 +53,15 @@ class SnippetServiceImpl
                     val content = apiCalls.getSnippet(it.id.toString())
                     GetSnippetDto.from(it, content)
                 }
-            return toPageable(snippets, page, size)
+            val lintSnippets = snippets.map {
+                val dto = FormatFileDto(UUID.randomUUID(),it.id, it.language, "1.1", it.content, userId)
+                it.compliance = lintSnippet(dto)
+                it
+            }
+            return toPageable(lintSnippets, page, size)
+        }
+        private fun lintSnippet (dto : FormatFileDto) : String {
+            return apiCalls.lintSnippet(dto)
         }
 
         override fun getSnippetById(

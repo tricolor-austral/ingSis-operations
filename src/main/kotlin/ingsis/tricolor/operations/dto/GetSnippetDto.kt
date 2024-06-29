@@ -7,7 +7,7 @@ data class GetSnippetDto(
     val name: String,
     val language: String,
     val content: String,
-    val compliance: String,
+    var compliance: String,
     val extension: String,
 ) {
     companion object {
