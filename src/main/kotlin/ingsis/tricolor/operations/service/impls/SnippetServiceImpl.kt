@@ -51,14 +51,10 @@ class SnippetServiceImpl
             val snippets =
                 context.map {
                     val content = apiCalls.getSnippet(it.id.toString())
-                    GetSnippetDto.from(it, content)
+                    val dto = FormatFileDto(UUID.randomUUID(),it.id.toString(), it.language, "1.1", content, userId)
+                    GetSnippetDto.from(it, content, lintSnippet(dto))
                 }
-            val lintSnippets = snippets.map {
-                val dto = FormatFileDto(UUID.randomUUID(),it.id, it.language, "1.1", it.content, userId)
-                it.compliance = lintSnippet(dto)
-                it
-            }
-            return toPageable(lintSnippets, page, size)
+            return toPageable(snippets, page, size)
         }
         private fun lintSnippet (dto : FormatFileDto) : String {
             return apiCalls.lintSnippet(dto)
@@ -81,7 +77,8 @@ class SnippetServiceImpl
             val snippets =
                 context.map {
                     val content = apiCalls.getSnippet(it.id.toString())
-                    GetSnippetDto.from(it, content)
+                    val dto = FormatFileDto(UUID.randomUUID(),it.id.toString(), it.language, "1.1", content, userId)
+                    GetSnippetDto.from(it, content,lintSnippet(dto))
                 }
             return snippets
         }

@@ -14,13 +14,14 @@ data class GetSnippetDto(
         fun from(
             snippet: Snippet,
             content: String,
+            compliance: String? = null
         ): GetSnippetDto {
             return GetSnippetDto(
                 snippet.id.toString(),
                 snippet.name,
                 snippet.language,
                 content,
-                snippet.compliance,
+                compliance?: snippet.compliance,
                 snippet.extension,
             )
         }
